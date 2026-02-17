@@ -1,20 +1,14 @@
-# 🛰️ Teletraan
+# Teletraan
 
-**Command Your Digital Realm.**
+Teletraan is a centralized security command system designed for high-performance desktop environments. It provides a unified interface for monitoring surveillance feeds, managing system logs, and coordinating security operations from a single dashboard.
 
-Teletraan is a next-generation security operating system designed for high-stakes, high-performance environments. Built with a focus on tactical precision and visual excellence, it provides a unified command center for digital security and surveillance.
+The project focuses on low-latency state synchronization and a highly responsive tactical UI. It is built to maintain a persistent connection to remote hardware nodes while providing a streamlined administrative experience.
 
-## 💎 Core Features
+## Key Functionality
 
-- **Tactical Intelligence Interface**: A premium, ultra-responsive dashboard optimized for situational awareness and rapid response.
-- **Universal Cross-Platform Build**: Engineered for total stability across Windows, macOS, and Linux.
-- **High-Frequency Auto-Sync**: Industry-leading update frequency ($4.8\text{s}$ check interval) ensuring system integrity without user intervention.
-- **Neural Surveillance Matrix**: Dynamic security logs and real-time system monitoring widgets for 360-degree visibility.
+- **Centralized Surveillance Management**: A multi-feed matrix for monitoring integrated camera systems and hardware sensors.
+- **Automated Synchronization**: A background update system that ensures all nodes remain on the latest stable build with minimal downtime.
+- **Security Event Logging**: A high-velocity log aggregator designed for real-time situational awareness and event tracking.
+- **Administrative Control**: A secure entry point for system administrators to manage credentials and monitor network health.
 
-## 🚀 Vision
-
-Teletraan is built for those who require absolute authority over their digital infrastructure. By combining cutting-edge web technologies (React, Vite, Framer Motion) with a robust Electron core, it delivers a high-stakes "OS" experience that is as powerful as it is beautiful.
-
----
-
-*© 2026 Ayobami Zenthos. All rights reserved.*
+The system is architected as a standalone desktop application, optimized for stability and long-session reliability in security monitoring stations.
