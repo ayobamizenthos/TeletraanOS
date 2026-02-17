@@ -27,87 +27,106 @@ const DmIcon = ({ size, className }) => <img src={dmIcon} className={className} 
 /* ─────────────────────────────────────
    FEED CELL
    ───────────────────────────────────── */
-const FeedCell = ({ label, active = true, alert = false, offline = false }) => (
-    <div className="relative w-full h-full bg-[#050505] overflow-hidden flex flex-col border border-white/[0.06] rounded-2xl group">
-        {offline ? (
-            // OFFLINE STATE
-            <>
-                <div className="absolute inset-0 bg-[#080808]">
-                    {/* Dark Static Noise */}
-                    <div className="w-full h-full opacity-[0.15]"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
-                    />
-                    {/* Diagonal Hazard Pattern */}
-                    <div className="absolute inset-0 opacity-[0.03]"
-                        style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 10px, #222 10px, #222 20px)' }}
-                    />
-                </div>
+const FeedCell = ({ label, active = true, alert = false, offline = false }) => {
+    const camId = useRef(`OX-${Math.random().toString(36).substr(2, 4).toUpperCase()}-${Math.random().toString(10).substr(2, 2)}`);
 
-                {/* Glitch Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-50 z-20">
-                    <motion.div
-                        animate={{ opacity: [0.3, 0.6, 0.3] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                        <WifiOff size={48} className="text-[#444]" strokeWidth={1} />
-                    </motion.div>
-                    <div className="flex flex-col items-center gap-1 mt-2">
-                        <span className="text-[#555] font-mono text-[24px] tracking-[0.2em] font-bold">SIGNAL LOST</span>
-                        <span className="text-[#333] font-mono text-[14px] tracking-widest uppercase">Check Connection Wire</span>
+    // Previous signal bar simulation
+    const [signal, setSignal] = useState(4);
+
+    useEffect(() => {
+        if (offline) return;
+        const interval = setInterval(() => {
+            setSignal(Math.floor(Math.random() * 2) + 3); // Fluctuate between 3-4 bars
+        }, 12000);
+        return () => clearInterval(interval);
+    }, [offline]);
+
+    return (
+        <div className="relative w-full h-full bg-[#050505] overflow-hidden flex flex-col border border-white/[0.08] rounded-xl group transition-all duration-500 hover:border-white/20">
+            {/* VIGNETTE & GRAIN LAYER */}
+            <div className="absolute inset-0 z-10 pointer-events-none opacity-[0.15]"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40 z-10 pointer-events-none" />
+
+            {offline ? (
+                <>
+                    {/* OFFLINE STATE - CRT STATIC */}
+                    <div className="absolute inset-0 bg-[#080808]">
+                        <div className="w-full h-full opacity-[0.2]"
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
+                        />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-20">
+                            <motion.div
+                                animate={{ opacity: [0.2, 0.5, 0.2] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="flex flex-col items-center"
+                            >
+                                <WifiOff size={42} className="text-white/20 mb-3" strokeWidth={1} />
+                                <span className="text-white/30 font-mono text-[11px] tracking-[0.4em] uppercase font-bold">Signal Lost</span>
+                            </motion.div>
+                        </div>
                     </div>
-                </div>
-
-                {/* Offline Label */}
-                <div className="absolute top-3 left-9 flex items-center gap-2 z-10 opacity-50">
-                    <span style={{ fontFamily: font.mono, fontSize: '16px', fontWeight: 500, color: '#666', letterSpacing: '0.05em' }}>
-                        {label} <span className="text-[12px] text-[#C43E3E] ml-2 tracking-widest">[OFFLINE]</span>
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#333]" />
-                </div>
-            </>
-        ) : (
-            // ONLINE STATE
-            <>
-                <div className="absolute inset-0 bg-[#080808]">
-                    <div className="w-full h-full opacity-[0.03] pointer-events-none"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
+                </>
+            ) : (
+                <>
+                    {/* ONLINE STATE - SCANNING & GRID */}
+                    <div className="absolute inset-0 opacity-[0.15]"
+                        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '32px 32px' }}
                     />
-                    <div className="absolute inset-0 opacity-[0.12] pointer-events-none"
-                        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent h-[20%] w-full animate-scan pointer-events-none" style={{ animationDuration: '8s' }} />
-                    {alert && <div className="absolute inset-0 bg-[#C43E3E] opacity-10 animate-pulse" />}
-                </div>
 
-                <div className="absolute top-1/2 left-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-20">
-                    <div className="w-[1px] h-full bg-white" />
-                    <div className="absolute h-[1px] w-full bg-white" />
-                </div>
+                    {/* Animated Scanline - Ultra-Slow Cinematic Sweep */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.05] to-transparent h-[10%] w-full animate-scan pointer-events-none" style={{ animationDuration: '24s' }} />
 
-                <div className="absolute top-3 left-9 flex items-center gap-2 z-10">
-                    <span style={{ fontFamily: font.mono, fontSize: '16px', fontWeight: 500, color: '#F2F2F7', letterSpacing: '0.05em', textShadow: '0 1px 4px rgba(0,0,0,1)', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
-                        {label}
-                    </span>
-                    {active && <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41]" style={{ boxShadow: '0 0 15px #00FF41' }} />}
-                </div>
-
-                {alert && (
-                    <div className="absolute top-3 right-9 flex items-center gap-1.5 z-10">
-                        <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
-                        <span style={{ fontFamily: font.mono, fontSize: '12px', color: '#8E8E93', opacity: 0.8 }}>REC</span>
+                    {/* Crosshair (Subtle) */}
+                    <div className="absolute top-1/2 left-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-20 pointer-events-none bg-white/[0.05] rounded-full">
+                        <div className="w-[1px] h-4 bg-white/40" />
+                        <div className="absolute h-[1px] w-4 bg-white/40" />
                     </div>
-                )}
-            </>
-        )}
 
-        {/* Global Corner Markers */}
-        <div className={`absolute top-4 left-4 w-4 h-4 border-t border-l ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute top-4 right-4 w-4 h-4 border-t border-r ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute bottom-4 left-4 w-4 h-4 border-b border-l ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute bottom-4 right-4 w-4 h-4 border-b border-r ${offline ? 'border-[#333]' : 'border-white/30'}`} />
+                    {/* TOP INFO BAR */}
+                    <div className="absolute top-4 left-6 right-6 flex justify-between items-start z-20">
+                        <div className="flex items-center gap-2">
+                            <div className={`w-1.5 h-1.5 rounded-full ${alert ? 'bg-red-500 animate-pulse' : 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]'}`} />
+                            <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase">{label || 'SOURCE-01'}</span>
+                        </div>
 
-    </div>
-)
+                        {/* SIGNAL BARS - TACTICAL GREEN DESIGN (COMPACT) */}
+                        <div className="flex items-end gap-[3px] h-3 pb-0.5">
+                            {[1, 2, 3, 4].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    animate={{
+                                        height: `${25 + (i * 18.75)}%`,
+                                        backgroundColor: signal >= i ? "#00FF41" : "rgba(255, 255, 255, 0.08)",
+                                        boxShadow: signal >= i ? "0 0 10px rgba(0, 255, 65, 0.5)" : "none"
+                                    }}
+                                    className="w-[2.5px] rounded-[0.5px] transition-colors"
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* BOTTOM STATUS */}
+                    <div className="absolute bottom-4 left-6 right-6 flex justify-end items-end z-20">
+                        <div className="flex items-center gap-1.5 px-2 py-1 bg-white/[0.03] border border-white/10 rounded-[2px]">
+                            <Cctv size={10} className="text-white/40" />
+                            <span className="text-[8px] font-mono font-bold text-white/60 uppercase tracking-widest">Live Link</span>
+                        </div>
+                    </div>
+
+                    {alert && <div className="absolute inset-0 border-2 border-red-500/20 bg-red-500/5 animate-pulse z-10 pointer-events-none" />}
+                </>
+            )}
+
+            {/* Tactical Corner Brackets */}
+            <div className={`absolute top-3 left-3 w-4 h-4 border-t border-l ${offline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute top-3 right-3 w-4 h-4 border-t border-r ${offline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute bottom-3 left-3 w-4 h-4 border-b border-l ${offline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute bottom-3 right-3 w-4 h-4 border-b border-r ${offline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+        </div>
+    );
+};
 
 /* ─────────────────────────────────────
    DASHBOARD
@@ -145,6 +164,7 @@ const Dashboard = ({ onLogout }) => {
     const [primusConnectStep, setPrimusConnectStep] = useState(1)
     const [primusForm, setPrimusForm] = useState({ site: '', label: '', location: '', description: '' })
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+    const [systemStats, setSystemStats] = useState({ battery: 100, net: 0, uptime: 0 })
 
     const [securityLogs, setSecurityLogs] = useState([
         { id: 1, time: '09:24 AM', title: 'Motion Detected', location: 'Front Door', type: 'alert' },
@@ -188,6 +208,15 @@ const Dashboard = ({ onLogout }) => {
         document.addEventListener('mousedown', handleClickOutside)
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
+
+    // System Stats Listener
+    useEffect(() => {
+        if (window.api && window.api.onSystemStats) {
+            window.api.onSystemStats((stats) => {
+                setSystemStats(stats)
+            })
         }
     }, [])
 
@@ -268,8 +297,8 @@ const Dashboard = ({ onLogout }) => {
 
             setSecurityLogs(prev => [newLog, ...prev.slice(0, 8)]) // Keep 9 items max for density
 
-            // Randomize speed for "burst" effect (fast: 150ms, slow: 800ms)
-            const nextDelay = Math.random() > 0.7 ? Math.floor(Math.random() * 200) + 150 : Math.floor(Math.random() * 600) + 400
+            // Deep slowdown for high-end feel (10s to 30s range)
+            const nextDelay = Math.floor(Math.random() * 20000) + 10000
             timeoutId = setTimeout(addLog, nextDelay)
         }
 
@@ -330,7 +359,7 @@ const Dashboard = ({ onLogout }) => {
                 onHoverEnd={() => setSidebarHover(false)}
                 initial={{ width: 72 }}
                 animate={{ width: sidebarHover ? 260 : 72 }}
-                transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                transition={{ type: "spring", stiffness: 120, damping: 24 }}
                 className="h-full bg-[#050505] flex flex-col pt-8 pb-6 shrink-0 z-40 relative shadow-[2px_0_20px_rgba(0,0,0,0.5)] rounded-r-2xl"
             >
                 {/* Custom Split-Level Border with Curve */}
@@ -405,14 +434,14 @@ const Dashboard = ({ onLogout }) => {
                         {/* Status Icon Area */}
                         <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
                             {/* Rotating Ring (Sophisticated) */}
-                            <div className={`absolute inset-0 rounded-full border-2 border-current opacity-30 ${sidebarHover ? 'text-[#00FF41] border-t-transparent border-l-transparent animate-[spin_3s_linear_infinite]' : 'text-white/20 border-white/10'}`} />
+                            <div className={`absolute inset-0 rounded-full border-2 border-current opacity-30 ${sidebarHover ? 'text-[#00FF41] border-t-transparent border-l-transparent animate-[spin_6s_linear_infinite]' : 'text-white/20 border-white/10'}`} />
 
                             {/* Inner Dot */}
                             <div className={`w-1.5 h-1.5 rounded-full ${sidebarHover ? 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]' : 'bg-white/20'}`} />
 
                             {/* Wave (Active only) */}
                             {sidebarHover && (
-                                <div className="absolute inset-0 rounded-full border border-[#00FF41] opacity-0 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                <div className="absolute inset-0 rounded-full border border-[#00FF41] opacity-0 animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite]" />
                             )}
                         </div>
 
@@ -672,133 +701,95 @@ const Dashboard = ({ onLogout }) => {
                                 {/* Top Highlight */}
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/10 z-20 pointer-events-none" />
 
-                                {currentCamera !== 'All cameras' ? (
-                                    // Single Camera View
+                                {(currentCamera !== 'All cameras' || currentLocation !== 'All locations') ? (
+                                    // Single Camera / Location View
                                     <motion.div
-                                        key={currentCamera}
+                                        key={currentCamera !== 'All cameras' ? currentCamera : currentLocation}
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.4 }}
                                         className="w-full h-full"
                                     >
                                         <FeedCell
-                                            label={currentCamera}
+                                            label={currentCamera !== 'All cameras' ? currentCamera : currentLocation}
                                             active
                                             alert={false}
                                         />
                                     </motion.div>
                                 ) : (
-                                    <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-[1px]">
-                                        {/* Top Left - Living Room */}
-                                        <motion.div
-                                            initial={{ x: -40, y: -40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Living Room'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Living Room'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
+                                    <div className="relative w-full h-full bg-[#020202] p-2">
+                                        {/* Background Tech Pattern */}
+                                        <div className="absolute inset-0 opacity-[0.02]"
+                                            style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+                                        />
 
+                                        <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-2 relative z-10">
+                                            {/* Top Left - Living Room */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.1 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Living Room'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Living Room'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label="LIVING_ROOM" offline={true} />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="px-3 py-1 bg-white text-black text-[9px] font-bold tracking-widest uppercase rounded-[1px]">Expand Feed</div>
+                                                </div>
+                                            </motion.div>
 
-                                            <FeedCell label="" offline={true} />
+                                            {/* Top Right - Front Door */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.2 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Front Door'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Front Door'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label="FRONT_DOOR" alert />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="px-3 py-1 bg-white text-black text-[9px] font-bold tracking-widest uppercase rounded-[1px]">Expand Feed</div>
+                                                </div>
+                                            </motion.div>
 
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Living Room</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
+                                            {/* Bottom Left - Backyard */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.3 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Backyard'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Backyard'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label="BACKYARD" />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="px-3 py-1 bg-white text-black text-[9px] font-bold tracking-widest uppercase rounded-[1px]">Expand Feed</div>
+                                                </div>
+                                            </motion.div>
 
-                                                    {/* Tech Corners */}
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
+                                            {/* Bottom Right - Garage */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.4 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Garage'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Garage'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label="GARAGE" offline={true} />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="px-3 py-1 bg-white text-black text-[9px] font-bold tracking-widest uppercase rounded-[1px]">Expand Feed</div>
+                                                </div>
+                                            </motion.div>
+                                        </div>
 
-                                        {/* Top Right - Front Door */}
-                                        <motion.div
-                                            initial={{ x: 40, y: -40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Front Door'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Front Door'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-                                            <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-[#00FF41] text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
-                                            </div>
-
-                                            <FeedCell label="" active={false} alert />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Front Door</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-
-                                        {/* Bottom Left - Backyard */}
-                                        <motion.div
-                                            initial={{ x: -40, y: 40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.2 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Backyard'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Backyard'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-                                            <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-white text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
-                                            </div>
-
-                                            <FeedCell label="" active={false} />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Backyard</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-
-                                        {/* Bottom Right - Garage */}
-                                        <motion.div
-                                            initial={{ x: 40, y: 40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.25 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Garage'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Garage'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-
-
-                                            <FeedCell label="" offline={true} />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Garage</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
+                                        {/* Matrix Center focus crosshair */}
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 z-20 pointer-events-none flex items-center justify-center opacity-10">
+                                            <div className="w-[2px] h-full bg-white/40" />
+                                            <div className="absolute h-[2px] w-full bg-white/40" />
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -814,18 +805,52 @@ const Dashboard = ({ onLogout }) => {
                                 {/* Primus Status - BOLDER DESIGN */}
                                 {/* System Status - ULTRA REALISTIC REDESIGN */}
                                 {/* System Status - CLEAN CONSUMER DESIGN */}
-                                <div className="flex flex-col gap-4 p-6 rounded-[6px] border border-white/10 shadow-lg relative bg-[#09090b] overflow-hidden group">
-                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                                <div className="flex flex-col gap-6 p-6 rounded-[6px] border border-white/[0.06] bg-[#050505] relative overflow-hidden shadow-2xl">
+                                    <div className="flex items-center justify-between gap-12 relative z-10 w-full px-4">
 
-                                    <div className="flex items-center gap-4 relative z-10">
-                                        <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#00FF41]/10 border border-[#00FF41]/20 shadow-[0_0_15px_rgba(0,255,65,0.15)]">
-                                            <CheckCircle2 size={20} className="text-[#00FF41]" />
-                                            <div className="absolute inset-0 rounded-full border border-[#00FF41] animate-ping opacity-20" />
+                                        {/* EXACT NETWORK ICON (Connected to Live Data) */}
+                                        <div className="flex items-center gap-2 group cursor-default">
+                                            <div className="relative flex items-end gap-[3px] h-6 pb-1">
+                                                {/* Base Dot */}
+                                                <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] mb-[1px]" />
+
+                                                {/* 4-Bar Signal Ramp */}
+                                                {[1, 2, 3, 4].map((i) => {
+                                                    const strength = (systemStats.net || 0);
+                                                    const isActive = strength >= (i * 25 - 10);
+                                                    return (
+                                                        <motion.div
+                                                            key={i}
+                                                            animate={{
+                                                                height: `${25 + (i * 18.75)}%`,
+                                                                backgroundColor: isActive ? "white" : "rgba(255,255,255,0.1)",
+                                                                boxShadow: isActive ? "0 0 8px rgba(255,255,255,0.2)" : "none"
+                                                            }}
+                                                            className="w-[4px] rounded-[0.5px]"
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[15px] font-bold text-white tracking-wide">System Online</span>
-                                            <span className="text-[13px] text-[#888] font-medium">Monitoring active</span>
+
+                                        {/* EXACT BATTERY ICON (Connected to Live Data) */}
+                                        <div className="flex items-center gap-4 group cursor-default">
+                                            <div className="relative w-14 h-7 border-[2px] border-white rounded-[4px] p-[2px] flex items-center">
+                                                {/* Battery Tip */}
+                                                <div className="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[2.5px] h-3.5 bg-white rounded-r-[1px]" />
+
+                                                {/* White Battery Fill */}
+                                                <motion.div
+                                                    initial={false}
+                                                    animate={{ width: `${systemStats.battery}%` }}
+                                                    className="h-full bg-white rounded-[0.5px] shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                                                />
+                                            </div>
+                                            <span className="text-[16px] font-mono font-black text-white leading-none tabular-nums">
+                                                {Math.floor(systemStats.battery)}%
+                                            </span>
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -1435,13 +1460,9 @@ const Dashboard = ({ onLogout }) => {
                                             <button
                                                 key={loc}
                                                 onClick={() => {
+                                                    setCurrentLocation(loc)
+                                                    setIsLocationOpen(false)
                                                     if (loc !== 'All locations') {
-                                                        setActiveGridCamera(loc)
-                                                        setIsCameraDetailOpen(true)
-                                                        setIsLocationOpen(false)
-                                                    } else {
-                                                        setCurrentLocation(loc)
-                                                        setIsLocationOpen(false)
                                                         setCurrentCamera('All cameras')
                                                     }
                                                 }}

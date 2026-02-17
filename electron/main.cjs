@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, powerMonitor } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const isDev = process.env.NODE_ENV === 'development';
@@ -120,14 +120,77 @@ function createWindow() {
     ipcMain.on('window-close', () => mainWindow.close());
 }
 
+const os = require('os');
+
+// ─── SYSTEM METRICS: REAL-TIME FEED ──────────────────────────────────────────
+const { exec } = require('child_process');
+
+function startSystemMetrics() {
+    const sendStats = async () => {
+        if (!mainWindow || mainWindow.isDestroyed()) return;
+
+        try {
+            // 1. Get REAL Battery Percentage (Robust PowerShell)
+            exec('powershell -Command "(Get-CimInstance -ClassName Win32_Battery).EstimatedChargeRemaining"', (err, stdout) => {
+                let batteryLevel = 100;
+                if (!err && stdout) {
+                    const match = stdout.trim().match(/^\d+$/);
+                    if (match) batteryLevel = parseInt(match[0]);
+                }
+
+                // 2. Get REAL Wi-Fi Signal Strength (Detailed netsh with Fallback)
+                exec('netsh wlan show interfaces', (err, stdout) => {
+                    let signalStrength = 100; // Default to full (Ethernet/Stable)
+
+                    if (!err && stdout) {
+                        const match = stdout.match(/Signal\s*:\s*(\d+)%/);
+                        if (match) {
+                            signalStrength = parseInt(match[1]);
+                        }
+                    } else if (err) {
+                        // Fallback: If netsh fails (elevation/location), check if interface is at least up
+                        exec('powershell -Command "(Get-NetAdapter -Name * -ErrorAction SilentlyContinue | Where-Object Status -eq \'Up\').Length"', (pErr, pStdout) => {
+                            if (!pErr && pStdout.trim() !== '0') {
+                                signalStrength = 90; // Connected but can't see exact %
+                            } else {
+                                signalStrength = 0; // Disconnected
+                            }
+                        });
+                    }
+
+                    const stats = {
+                        battery: Math.max(0, Math.min(100, batteryLevel)),
+                        net: Math.max(0, Math.min(100, signalStrength)),
+                        uptime: os.uptime()
+                    };
+
+                    // BROADCAST LOG (So user can see real data in terminal if needed)
+                    console.log(`[TELEMETRY] BAT: ${stats.battery}% | NET: ${stats.net}% | UPTIME: ${Math.floor(stats.uptime / 3600)}h`);
+
+                    if (mainWindow && !mainWindow.isDestroyed()) {
+                        mainWindow.webContents.send('system-stats', stats);
+                    }
+                });
+            });
+        } catch (err) {
+            // Silent catch
+        }
+    };
+
+    setInterval(sendStats, 3000);
+    setTimeout(sendStats, 1000);
+}
+
 // ─── APP LIFECYCLE ───────────────────────────────────────────────────────────
 app.whenReady().then(() => {
     createWindow();
     setupAutoUpdater();
+    startSystemMetrics();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
+            startSystemMetrics();
         }
     });
 });
