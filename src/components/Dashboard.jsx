@@ -10,6 +10,7 @@ import dmIcon from '../assets/dm.svg'
 import rfIcon from '../assets/rf.svg'
 import saIcon from '../assets/sa.svg'
 import teletraanLogo from '../assets/teletraan.svg'
+import secCamSvg from '../assets/sec-cam.svg'
 
 import WindowControls from './WindowControls'
 
@@ -833,7 +834,7 @@ const Dashboard = ({ onLogout }) => {
                             transition={{ duration: 0.4 }}
                             className="flex flex-col items-center justify-center text-center max-w-lg"
                         >
-                            <img src="/sec-cam.svg" className="w-[320px] mb-6 opacity-60 invert select-none pointer-events-none" alt="Camera Setup" />
+                            <img src={secCamSvg} className="w-[320px] mb-6 opacity-60 invert select-none pointer-events-none" alt="Camera Setup" />
                             <h2 className="text-[24px] text-[#F2F2F7] font-medium mb-3 tracking-wide">No Camera connected yet.</h2>
                             <p className="text-[#888] text-[15px] mb-10 leading-relaxed font-light">Let's set up your first camera for live monitoring</p>
                             <button
