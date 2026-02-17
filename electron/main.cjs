@@ -62,9 +62,7 @@ function setupAutoUpdater() {
 function createWindow() {
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
-    const iconPath = isDev
-        ? path.join(__dirname, '..', 'public', 'teletraan.png')
-        : path.join(__dirname, '..', 'dist', 'teletraan.png');
+    const iconPath = path.join(__dirname, 'teletraan.png');
 
     mainWindow = new BrowserWindow({
         width: width,
