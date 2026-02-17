@@ -9,12 +9,11 @@ const Loading = () => {
     const [phaseIndex, setPhaseIndex] = useState(0)
     const [isComplete, setIsComplete] = useState(false)
 
-    // "Silicon Valley" style phrasing: Professional, clear, sophisticated, human-centric not robotic
+    // Tactical / Professional Phrasing - User Provided
     const phases = [
-        { text: "Establishing Secure Connection", icon: ShieldCheck },
-        { text: "Verifying User Credentials", icon: Zap },
-        { text: "Synchronizing Data Feeds", icon: Server },
-        { text: "Preparing Your Command Center", icon: LayoutDashboard },
+        { text: "MAXIMUM PROTECTION" },
+        { text: "ACCESS CONTROL" },
+        { text: "AI-POWERED SURVEILLANCE" },
     ]
 
     useEffect(() => {
@@ -76,86 +75,69 @@ const Loading = () => {
             <div className="relative z-10 flex flex-col items-center w-full max-w-[500px] px-6">
 
                 {/* LOGO: Breathing Animation */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="relative mb-16"
-                >
+                {/* LOGO: Breathing Animation via Morph */}
+                <div className="relative mb-16 flex justify-center items-center">
                     <div className="absolute -inset-20 bg-white/5 filter blur-[50px] rounded-full animate-pulse px-4" />
-                    <img
+                    <motion.img
+                        layoutId="teletraan-hero-logo"
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                         src={teletraanLogo}
-                        alt="Teletraan OS"
-                        className="w-[280px] md:w-[320px] relative z-20 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                        alt="Teletraan"
+                        className="w-[380px] md:w-[480px] relative z-20 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                     />
-                </motion.div>
+                </div>
 
 
-                {/* LOADING BAR: High-End "Capsule" Design */}
-                <div className="w-full flex flex-col gap-6">
+                {/* LOADING BAR: HEAVY DUTY TACTICAL */}
+                <motion.div
+                    initial={{ opacity: 0, scaleX: 0.8 }}
+                    animate={{ opacity: 1, scaleX: 1 }}
+                    transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
+                    className="w-full max-w-[800px] flex flex-col gap-4 relative z-30"
+                >
 
-                    {/* Top Row: Phase Text & Percentage (High Contrast) */}
-                    <div className="flex justify-between items-end px-1">
-                        <div className="flex flex-col h-8 justify-end overflow-hidden">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={phaseIndex}
-                                    initial={{ opacity: 0, y: 15 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -15 }}
-                                    transition={{ duration: 0.4, ease: "circOut" }}
-                                    className="flex items-center gap-3"
-                                >
-                                    {/* Icon for Phase */}
-                                    <div className="text-white/80">
-                                        {React.createElement(phases[phaseIndex].icon, { size: 16, strokeWidth: 2 })}
-                                    </div>
-                                    <span className="text-[15px] md:text-[16px] font-medium tracking-wide text-white drop-shadow-md">
-                                        {phases[phaseIndex].text}
-                                    </span>
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
-
-                        <span className="text-[16px] font-bold text-white tracking-widest tabular-nums font-mono opacity-90">
-                            {Math.round(progress)}%
-                        </span>
+                    {/* Status Text - BIG & BOLD */}
+                    <div className="flex justify-between items-end px-2 mb-2">
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={phaseIndex}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="font-mono text-[16px] md:text-[20px] font-bold tracking-[0.15em] text-white uppercase"
+                            >
+                                {phases[phaseIndex]?.text || "SYSTEM INITIALIZED"}
+                            </motion.span>
+                        </AnimatePresence>
+                        <span className="font-mono text-[24px] font-bold tracking-widest">{Math.round(progress)}%</span>
                     </div>
 
-                    {/* THE BAR ITSELF */}
-                    <div className="relative h-[10px] w-full bg-[#111] rounded-full p-[2px] shadow-[0_4px_20px_rgba(0,0,0,0.8)] border border-white/10 overflow-hidden">
-                        {/* Inner Gradient Track */}
+                    {/* Heavy Bar Container */}
+                    <div className="relative h-[24px] w-full bg-[#0A0A0A] border-2 border-white/30 flex items-center p-[2px]">
+
+                        {/* The Fill - Solid Block */}
                         <motion.div
-                            className="h-full rounded-full relative overflow-hidden"
+                            className="h-full bg-white relative"
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
-                            transition={{ ease: "linear", duration: 0.05 }}
-                            style={{
-                                background: 'linear-gradient(90deg, #444 0%, #AAA 50%, #FFFFFF 100%)', // Silver/Titanium Gradient
-                                boxShadow: '0 0 20px rgba(255, 255, 255, 0.4)'
-                            }}
+                            transition={{ ease: "linear", duration: 0.1 }}
                         >
-                            {/* Moving Shine Effect on Bar */}
-                            <div className="absolute top-0 right-0 bottom-0 w-[40px] bg-gradient-to-r from-transparent via-white to-transparent opacity-50 skew-x-[-20deg]" />
+                            {/* Leading Edge Glare */}
+                            <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-black" />
                         </motion.div>
+
+                        {/* Tactical Markers on Top/Bottom */}
+                        <div className="absolute top-[-6px] left-0 w-2 h-[2px] bg-white" />
+                        <div className="absolute top-[-6px] right-0 w-2 h-[2px] bg-white" />
+                        <div className="absolute bottom-[-6px] left-0 w-2 h-[2px] bg-white" />
+                        <div className="absolute bottom-[-6px] right-0 w-2 h-[2px] bg-white" />
+
+                        {/* Center Marker */}
+                        <div className="absolute top-[-4px] left-1/2 w-[2px] h-[4px] bg-white/50" />
+                        <div className="absolute bottom-[-4px] left-1/2 w-[2px] h-[4px] bg-white/50" />
                     </div>
 
-                    {/* Completion Flash */}
-                    <AnimatePresence>
-                        {isComplete && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="absolute -bottom-12 left-0 right-0 flex justify-center"
-                            >
-                                <span className="text-[12px] font-bold tracking-[0.3em] text-[#00FF41] uppercase glow-text">
-                                    System Ready
-                                </span>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                </div>
+                </motion.div>
 
             </div>
 

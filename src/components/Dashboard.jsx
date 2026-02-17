@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-    MapPin, Minus, Square, X, Bell, RefreshCw, Key, MessageCircle, Wrench, Loader2,
+    MapPin, Minus, Square, X, Bell, RefreshCw, Key, MessageCircle, Wrench, Loader2, Wifi, Activity, CheckCircle2,
     LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera
 } from 'lucide-react'
 
@@ -10,6 +10,7 @@ import dmIcon from '../assets/dm.svg'
 import rfIcon from '../assets/rf.svg'
 import saIcon from '../assets/sa.svg'
 import teletraanLogo from '../assets/teletraan.svg'
+import secCamSvg from '../assets/sec-cam.svg'
 
 import WindowControls from './WindowControls'
 
@@ -145,6 +146,16 @@ const Dashboard = ({ onLogout }) => {
     const [primusForm, setPrimusForm] = useState({ site: '', label: '', location: '', description: '' })
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
 
+    const [securityLogs, setSecurityLogs] = useState([
+        { id: 1, time: '09:24 AM', title: 'Motion Detected', location: 'Front Door', type: 'alert' },
+        { id: 2, time: '09:12 AM', title: 'Person Detected', location: 'Backyard', type: 'alert' },
+        { id: 3, time: '08:45 AM', title: 'System Armed', location: 'Home', type: 'system' },
+        { id: 4, time: '07:30 AM', title: 'Door Unlocked', location: 'Garage', type: 'info' },
+        { id: 5, time: '07:28 AM', title: 'Person Detected', location: 'Garage', type: 'alert' },
+        { id: 6, time: '06:00 AM', title: 'Routine Check', location: 'System', type: 'system' },
+        { id: 7, time: '01:15 AM', title: 'Motion Detected', location: 'Living Room', type: 'alert' },
+    ])
+
     const [chatHistory, setChatHistory] = useState({
         'System Admin': [
             { id: 1, sender: "System Admin", role: "admin", text: "A new security camera has been integrated into the system.", time: "10:23 AM" }
@@ -226,6 +237,45 @@ const Dashboard = ({ onLogout }) => {
         const t = setInterval(update, 1000)
         update()
         return () => clearInterval(t)
+    }, [])
+
+    // LIVE LOG GENERATOR - HYPER SPEED
+    useEffect(() => {
+        const logPool = [
+            { title: 'Packet Analyzed', location: 'Firewall Node A', type: 'info' },
+            { title: 'Motion Trace', location: 'Sector 4', type: 'alert' },
+            { title: 'Encrypted Handshake', location: 'Core Server', type: 'system' },
+            { title: 'Door Status: Locked', location: 'Garage', type: 'info' },
+            { title: 'Database Sync', location: 'Cloud Shard 1', type: 'system' },
+            { title: 'Ping: 12ms', location: 'Network Backbone', type: 'info' },
+            { title: 'Signal Lost', location: 'Cam-02 (Kitchen)', type: 'alert' },
+            { title: 'Signal Restored', location: 'Cam-02 (Kitchen)', type: 'system' },
+            { title: 'Auth Verified', location: 'Admin Console', type: 'system' },
+            { title: 'Biometric Scan', location: 'Front Gate', type: 'alert' },
+            { title: 'Thermal Read', location: 'Server Room', type: 'info' },
+            { title: 'Key Rotation', location: 'Security Module', type: 'system' },
+        ]
+
+        let timeoutId
+
+        const addLog = () => {
+            const randomLog = logPool[Math.floor(Math.random() * logPool.length)]
+            const newLog = {
+                id: Date.now() + Math.random(), // Ensure unique ID
+                time: new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                ...randomLog
+            }
+
+            setSecurityLogs(prev => [newLog, ...prev.slice(0, 8)]) // Keep 9 items max for density
+
+            // Randomize speed for "burst" effect (fast: 150ms, slow: 800ms)
+            const nextDelay = Math.random() > 0.7 ? Math.floor(Math.random() * 200) + 150 : Math.floor(Math.random() * 600) + 400
+            timeoutId = setTimeout(addLog, nextDelay)
+        }
+
+        addLog()
+
+        return () => clearTimeout(timeoutId)
     }, [])
 
     const locations = ["All locations", "Living Room", "Front Door", "Backyard", "Garage"]
@@ -346,15 +396,48 @@ const Dashboard = ({ onLogout }) => {
                 </div>
 
                 {/* Bottom Status */}
-                <div className="mt-auto mb-4 px-4 whitespace-nowrap overflow-hidden">
-                    <div className={`flex items-center gap-3 px-3 py-2 rounded-[4px] border transition-colors ${sidebarHover ? 'border-[#00FF41]/30 bg-[#00FF41]/[0.05]' : 'border-transparent'}`}>
-                        <div className="w-2.5 h-2.5 shrink-0 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41]" />
-                        <motion.span
-                            animate={{ opacity: sidebarHover ? 1 : 0 }}
-                            className="text-[13px] font-mono text-[#00FF41] tracking-wider uppercase font-semibold"
+                <div className="mt-auto mb-6 px-3 whitespace-nowrap overflow-hidden">
+                    <div className={`
+                        relative flex items-center ${sidebarHover ? 'px-4' : 'justify-center px-0'} py-3 
+                        bg-[#00FF41]/[0.02] border-2 ${sidebarHover ? 'border-[#00FF41]/40 shadow-[0_0_20px_rgba(0,255,65,0.05)]' : 'border-white/10 bg-transparent'}
+                        rounded-[6px] transition-all duration-500 group overflow-hidden cursor-default backdrop-blur-[2px]
+                    `}>
+                        {/* Status Icon Area */}
+                        <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
+                            {/* Rotating Ring (Sophisticated) */}
+                            <div className={`absolute inset-0 rounded-full border-2 border-current opacity-30 ${sidebarHover ? 'text-[#00FF41] border-t-transparent border-l-transparent animate-[spin_3s_linear_infinite]' : 'text-white/20 border-white/10'}`} />
+
+                            {/* Inner Dot */}
+                            <div className={`w-1.5 h-1.5 rounded-full ${sidebarHover ? 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]' : 'bg-white/20'}`} />
+
+                            {/* Wave (Active only) */}
+                            {sidebarHover && (
+                                <div className="absolute inset-0 rounded-full border border-[#00FF41] opacity-0 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                            )}
+                        </div>
+
+                        {/* Text Content (Animate Width) */}
+                        <motion.div
+                            animate={{ opacity: sidebarHover ? 1 : 0, width: sidebarHover ? 'auto' : 0 }}
+                            className="flex flex-col items-start ml-3 overflow-hidden"
                         >
-                            Connected to Primus
-                        </motion.span>
+                            <span className="text-[12px] font-black font-mono text-[#00FF41] tracking-[0.1em] uppercase whitespace-nowrap leading-none mb-1">
+                                PRIMUS
+                            </span>
+                            <span className="text-[8px] font-medium font-sans text-[#00FF41]/50 tracking-wider uppercase whitespace-nowrap leading-none">
+                                CONNECTED
+                            </span>
+                        </motion.div>
+
+                        {/* Signal Bars (Far Right) */}
+                        <motion.div
+                            animate={{ opacity: sidebarHover ? 1 : 0, width: sidebarHover ? 'auto' : 0 }}
+                            className="flex gap-[2px] items-end h-3 ml-auto pl-4"
+                        >
+                            <div className="w-[2px] h-[4px] bg-[#00FF41]/20" />
+                            <div className="w-[2px] h-[8px] bg-[#00FF41]/50" />
+                            <div className="w-[2px] h-[12px] bg-[#00FF41]" />
+                        </motion.div>
                     </div>
                 </div>
 
@@ -558,10 +641,17 @@ const Dashboard = ({ onLogout }) => {
 
                         <button
                             onClick={() => setIsSetupOpen(true)}
-                            className="h-9 px-4 bg-[#F2F2F7] text-black text-[14px] font-bold tracking-wider rounded-[2px] hover:bg-white transition-colors shadow-[0_0_15px_rgba(255,255,255,0.1)] cursor-pointer flex items-center gap-2"
+                            className="relative group h-9 px-6 border border-white overflow-hidden rounded-[2px] cursor-pointer flex items-center gap-2"
                         >
-                            <Plus size={16} strokeWidth={3} />
-                            Add camera
+                            <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                            <div className="relative z-10 flex items-center gap-2">
+                                <Plus size={14} strokeWidth={3} className="text-black group-hover:text-white transition-colors duration-300" />
+                                <span className="text-[12px] font-mono font-bold tracking-wider uppercase text-black group-hover:text-white transition-colors duration-300">
+                                    Add camera
+                                </span>
+                            </div>
+                            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                         </button>
                     </div>
                 </div>
@@ -637,7 +727,7 @@ const Dashboard = ({ onLogout }) => {
                                         >
                                             <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
                                                 <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-[#00FF41] text-[12px] font-bold tracking-widest uppercase shadow-black drop-shadow-md">ACTIVE</span>
+                                                <span className="text-[#00FF41] text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
                                             </div>
 
                                             <FeedCell label="" active={false} alert />
@@ -666,7 +756,7 @@ const Dashboard = ({ onLogout }) => {
                                         >
                                             <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
                                                 <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-white text-[12px] font-bold tracking-widest uppercase shadow-black drop-shadow-md">ACTIVE</span>
+                                                <span className="text-white text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
                                             </div>
 
                                             <FeedCell label="" active={false} />
@@ -722,71 +812,74 @@ const Dashboard = ({ onLogout }) => {
                             >
 
                                 {/* Primus Status - BOLDER DESIGN */}
-                                <div className="flex flex-col gap-1 p-5 rounded-[6px] border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.9)] relative bg-black">
-                                    {/* Top Highlight */}
-                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/10" />
+                                {/* System Status - ULTRA REALISTIC REDESIGN */}
+                                {/* System Status - CLEAN CONSUMER DESIGN */}
+                                <div className="flex flex-col gap-4 p-6 rounded-[6px] border border-white/10 shadow-lg relative bg-[#09090b] overflow-hidden group">
+                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-                                    <div className="flex flex-col gap-1 relative z-10">
-                                        <span className="text-[14px] text-[#6E6E73] font-mono tracking-wider lowercase">system status</span>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[20px] font-semibold text-[#00FF41] tracking-tight lowercase" style={{ textShadow: '0 0 20px rgba(0,255,65,0.6)' }}>
-                                                connected
-                                            </span>
-                                            <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41]" style={{ boxShadow: '0 0 15px #00FF41' }} />
+                                    <div className="flex items-center gap-4 relative z-10">
+                                        <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#00FF41]/10 border border-[#00FF41]/20 shadow-[0_0_15px_rgba(0,255,65,0.15)]">
+                                            <CheckCircle2 size={20} className="text-[#00FF41]" />
+                                            <div className="absolute inset-0 rounded-full border border-[#00FF41] animate-ping opacity-20" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[15px] font-bold text-white tracking-wide">System Online</span>
+                                            <span className="text-[13px] text-[#888] font-medium">Monitoring active</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Alert Log - TACTICAL REDESIGN */}
-                                <div className="flex-1 flex flex-col overflow-hidden rounded-[6px] border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.9)] bg-black relative group">
-                                    {/* Scanline Overlay REMOVED */}
+                                {/* Security Logs - CLEAN LIST DESIGN */}
+                                <div className="flex-1 flex flex-col overflow-hidden rounded-[6px] border border-white/10 shadow-lg bg-[#09090b] relative">
 
-                                    {/* Simplified Header */}
-                                    <div className="h-12 border-b border-white/10 flex items-center px-6 bg-white/[0.02] shrink-0 relative z-10">
-                                        <span className="text-[14px] font-bold text-white tracking-[0.2em] uppercase">SECURITY EVENTS</span>
+                                    {/* Header */}
+                                    <div className="h-12 border-b border-white/10 flex items-center justify-between px-6 bg-white/[0.02] shrink-0">
+                                        <div className="flex items-center gap-2.5">
+                                            <Activity size={16} className="text-white opacity-80" />
+                                            <span className="text-[13px] font-bold text-white tracking-[0.1em] uppercase">Security Logs</span>
+                                        </div>
                                     </div>
 
-                                    {/* Log List */}
-                                    <div className="flex-1 overflow-y-auto scrollbar-hide flex flex-col relative z-10 px-0">
-                                        {[
-                                            { time: '00:00:24', text: 'MOTION DETECTED', sub: 'Front Door Camera', active: true },
-                                            { time: '02:00:15', text: 'UNIDENTIFIED SUBJECT', sub: 'Sector 2 (Biometric Scan)', active: true },
-                                            { time: '14:00:00', text: 'PERIMETER BREACH', sub: 'Backyard Gate Sensor', active: true },
-                                            { time: '21:00:45', text: 'SYSTEM ARMED', sub: 'Main Control Panel', active: false },
-                                            { time: '22:45:10', text: 'MOTION DETECTED', sub: 'Living Room Camera', active: false },
-                                            { time: '01:20:33', text: 'ACCESS GRANTED', sub: 'Garage Entry Keypad', active: false },
-                                            { time: '03:15:00', text: 'NETWORK SYNC', sub: 'Auto-Routine Check', active: false },
-                                            { time: '04:00:00', text: 'DATA ARCHIVAL', sub: 'Server Node 1', active: false },
-                                        ].map((item, i) => (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: 0.1 * i, duration: 0.3 }}
-                                                key={i}
-                                                className="flex items-center justify-between px-5 py-4 border-b border-white/[0.04] hover:bg-white/[0.04] group/item cursor-pointer transition-all duration-200"
-                                            >
-                                                <div className="flex flex-col gap-0.5">
-                                                    <span className={`text-[14px] font-medium tracking-wide transition-colors ${item.active ? 'text-white' : 'text-[#888] group-hover/item:text-white'}`}>
-                                                        {item.text}
-                                                    </span>
-                                                    <span className="text-[12px] text-[#CCC] group-hover/item:text-white transition-colors">
-                                                        {item.sub}
-                                                    </span>
-                                                </div>
+                                    {/* Clean List */}
+                                    <div className="flex-1 overflow-hidden p-2 relative">
+                                        <AnimatePresence initial={false}>
+                                            {securityLogs.map((item) => (
+                                                <motion.div
+                                                    layout
+                                                    initial={{ opacity: 0, x: -20, backgroundColor: "rgba(255,255,255,0.1)" }}
+                                                    animate={{ opacity: 1, x: 0, backgroundColor: "rgba(255,255,255,0)" }}
+                                                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
+                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                    key={item.id}
+                                                    className="flex items-center justify-between px-4 py-3 rounded-[4px] hover:bg-white/[0.04] transition-colors cursor-default group border-b border-transparent hover:border-white/[0.02]"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        {/* Status Dot */}
+                                                        <div className={`w-2 h-2 rounded-full ${item.type === 'alert' ? 'bg-[#FF3B30] shadow-[0_0_8px_#FF3B30]' :
+                                                            item.type === 'system' ? 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]' :
+                                                                'bg-[#0A84FF] shadow-[0_0_8px_#0A84FF]'
+                                                            }`} />
 
-                                                <div className="flex items-center gap-4">
-                                                    <span className="text-[12px] text-[#444] font-mono group-hover/item:text-[#F2F2F7] transition-colors">
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <span className={`text-[13px] font-medium leading-tight ${item.type === 'alert' ? 'text-white' : 'text-[#DDD]'}`}>
+                                                                {item.title}
+                                                            </span>
+                                                            <span className="text-[11px] text-[#666] group-hover:text-[#999] transition-colors">
+                                                                {item.location}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <span className="text-[11px] text-[#555] font-medium group-hover:text-[#888] transition-colors font-mono">
                                                         {item.time}
                                                     </span>
-                                                    {/* Status Marker - Minimal Dot */}
-                                                    <div className={`w-1.5 h-1.5 rounded-full ${item.active ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'bg-[#222]'}`} />
-                                                </div>
-                                            </motion.div>
-                                        ))}
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
                                     </div>
 
                                     {/* Bottom Fade */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black to-transparent z-20 pointer-events-none" />
+                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#09090b] to-transparent pointer-events-none" />
                                 </div>
                             </motion.div>
 
@@ -833,7 +926,7 @@ const Dashboard = ({ onLogout }) => {
                             transition={{ duration: 0.4 }}
                             className="flex flex-col items-center justify-center text-center max-w-lg"
                         >
-                            <img src="/sec-cam.svg" className="w-[320px] mb-6 opacity-60 invert select-none pointer-events-none" alt="Camera Setup" />
+                            <img src={secCamSvg} className="w-[320px] mb-6 opacity-60 invert select-none pointer-events-none" alt="Camera Setup" />
                             <h2 className="text-[24px] text-[#F2F2F7] font-medium mb-3 tracking-wide">No Camera connected yet.</h2>
                             <p className="text-[#888] text-[15px] mb-10 leading-relaxed font-light">Let's set up your first camera for live monitoring</p>
                             <button
@@ -841,9 +934,22 @@ const Dashboard = ({ onLogout }) => {
                                     setIsPrimusConnectOpen(true)
                                     setPrimusConnectStep(1)
                                 }}
-                                className="px-8 py-3 bg-[#F2F2F7] hover:bg-white text-black text-[14px] font-bold tracking-wider rounded-[2px] flex items-center gap-3 group transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                                className="relative group px-8 py-3 bg-transparent border border-white overflow-hidden rounded-[2px] flex items-center gap-4 cursor-pointer"
                             >
-                                Connect <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                {/* Solid White Sliding Background - Default Visible, Slides Right on Hover */}
+                                <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+
+                                {/* Content Layer - Text Colors Flip */}
+                                <div className="relative z-10 flex items-center gap-3">
+                                    <span className="text-[14px] font-mono font-bold tracking-[0.2em] uppercase text-black group-hover:text-white transition-colors duration-300">
+                                        Connect
+                                    </span>
+                                    <ArrowRight size={18} className="text-black group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                                </div>
+
+                                {/* Tactical Corners (Hidden by default or white bg blocks them, visible when transparent) */}
+                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                             </button>
                         </motion.div>
                     )}
@@ -912,9 +1018,14 @@ const Dashboard = ({ onLogout }) => {
                                                         setPrimusConnectStep(3)
                                                     }, 2500)
                                                 }}
-                                                className="px-8 py-3.5 bg-white hover:bg-[#F2F2F7] text-black text-[14px] font-bold tracking-wide rounded-lg transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-[0.98]"
+                                                className="relative group px-8 py-3.5 border border-white overflow-hidden rounded-[2px] cursor-pointer"
                                             >
-                                                Connect Primus
+                                                <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                                <span className="relative z-10 text-[14px] font-mono font-bold tracking-[0.2em] uppercase text-black group-hover:text-white transition-colors duration-300">
+                                                    Connect Primus
+                                                </span>
+                                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                             </button>
                                         </motion.div>
                                     )}
@@ -1002,9 +1113,17 @@ const Dashboard = ({ onLogout }) => {
                                                 <div className="mt-4 pt-6">
                                                     <button
                                                         onClick={() => setPrimusConnectStep(4)}
-                                                        className="w-full h-12 bg-white hover:bg-[#F2F2F7] text-black text-[14px] font-bold tracking-wide rounded-lg transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
+                                                        className="w-full h-12 relative group border border-white overflow-hidden rounded-[2px] cursor-pointer flex items-center justify-center"
                                                     >
-                                                        Connect <ArrowRight size={18} />
+                                                        <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                                        <div className="relative z-10 flex items-center gap-3">
+                                                            <span className="text-[14px] font-mono font-bold tracking-[0.2em] uppercase text-black group-hover:text-white transition-colors duration-300">
+                                                                Connect
+                                                            </span>
+                                                            <ArrowRight size={18} className="text-black group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                                                        </div>
+                                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -1027,9 +1146,14 @@ const Dashboard = ({ onLogout }) => {
                                             </p>
                                             <button
                                                 onClick={() => setIsPrimusConnectOpen(false)}
-                                                className="w-full max-w-[200px] h-11 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black text-[14px] font-bold tracking-wide rounded-lg transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)]"
+                                                className="relative group w-full max-w-[200px] h-11 border border-white overflow-hidden rounded-[2px] cursor-pointer flex items-center justify-center"
                                             >
-                                                Continue
+                                                <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                                <span className="relative z-10 text-[14px] font-mono font-bold tracking-[0.2em] uppercase text-black group-hover:text-white transition-colors duration-300">
+                                                    Continue
+                                                </span>
+                                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                             </button>
                                         </motion.div>
                                     )}
@@ -1409,7 +1533,33 @@ const Dashboard = ({ onLogout }) => {
                                             <div className={`relative z-10 p-4 border border-white/10 rounded-full transition-all duration-500 group-hover:scale-110 group-hover:border-[#F2F2F7]/30
                                                 ${currentCamera === cam ? 'bg-[#F2F2F7] text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-white/[0.03] text-[#666] group-hover:text-[#F2F2F7]'}
                                             `}>
-                                                <Video size={24} />
+                                                {cam === 'All cameras' ? (
+                                                    <Video size={24} />
+                                                ) : (
+                                                    <div className="relative w-6 h-6 flex items-center justify-center">
+                                                        {/* Rotating Focus Ring */}
+                                                        <div className="absolute inset-[-6px] border border-current rounded-full opacity-20 border-t-transparent border-l-transparent animate-[spin_4s_linear_infinite]" />
+                                                        <div className="absolute inset-[-6px] border border-current rounded-full opacity-10 border-b-transparent border-r-transparent animate-[spin_4s_linear_infinite_reverse]" />
+
+                                                        {/* Lens Assembly SVG */}
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full relative z-10">
+                                                            <circle cx="12" cy="12" r="10" strokeOpacity="0.5" />
+                                                            <circle cx="12" cy="12" r="4" />
+                                                            <path d="M12 2v2" />
+                                                            <path d="M12 20v2" />
+                                                            <path d="M2 12h2" />
+                                                            <path d="M20 12h2" />
+                                                            <path d="M7 7l1.5 1.5" />
+                                                            <path d="M17 7l-1.5 1.5" />
+                                                            <path d="M7 17l1.5-1.5" />
+                                                            <path d="M17 17l-1.5-1.5" />
+                                                        </svg>
+
+                                                        {/* Central Sensor Glow */}
+                                                        <div className="absolute inset-0 bg-current opacity-0 group-hover:opacity-20 rounded-full blur-md transition-opacity duration-500" />
+                                                        <div className="absolute w-1.5 h-1.5 bg-current rounded-full" />
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <div className="absolute bottom-4 opacity-100 transition-all duration-300 transform translate-y-0">
@@ -1665,12 +1815,18 @@ const Dashboard = ({ onLogout }) => {
 
                                             {/* Action Button */}
                                             <div className="flex justify-center mt-4">
-                                                <button className="relative group w-full h-14 bg-[#F2F2F7] hover:bg-white transition-all overflow-hidden rounded-[2px]">
-                                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                                                <button
+                                                    className="relative group w-full h-14 border border-white overflow-hidden rounded-[2px] cursor-pointer"
+                                                >
+                                                    <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
                                                     <div className="relative z-10 flex items-center justify-center gap-3">
-                                                        <span className="text-black text-xs font-bold tracking-[0.2em] uppercase">Connect Camera</span>
-                                                        <ArrowRight size={14} className="text-black -translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+                                                        <span className="text-black group-hover:text-white text-[12px] font-mono font-bold tracking-[0.2em] uppercase transition-colors duration-300">
+                                                            Connect Camera
+                                                        </span>
+                                                        <ArrowRight size={14} className="text-black group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                                                     </div>
+                                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                                 </button>
                                             </div>
                                         </div>
@@ -1682,9 +1838,14 @@ const Dashboard = ({ onLogout }) => {
                                     <div className="p-8 border-t border-white/[0.06] flex justify-end bg-black/20">
                                         <button
                                             onClick={() => setSetupStep(2)}
-                                            className="h-14 px-10 bg-[#F2F2F7] hover:bg-white text-black text-xs font-bold tracking-[0.2em] rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all uppercase"
+                                            className="relative group h-14 px-10 border border-white overflow-hidden rounded-[2px] cursor-pointer"
                                         >
-                                            Proceed to Config
+                                            <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                            <span className="relative z-10 text-black group-hover:text-white text-[12px] font-mono font-bold tracking-[0.2em] uppercase transition-colors duration-300">
+                                                Proceed to Config
+                                            </span>
+                                            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                         </button>
                                     </div>
                                 )}
@@ -1855,7 +2016,7 @@ const Dashboard = ({ onLogout }) => {
                                                 <Edit2 size={14} className="group-hover:text-[#F2F2F7] transition-colors" />
                                                 Config
                                             </button>
-                                            <button className="px-6 py-2.5 bg-[#FF3B30]/10 hover:bg-[#FF3B30]/20 border border-[#FF3B30]/20 hover:border-[#FF3B30]/40 text-[#FF3B30] text-[12px] font-bold tracking-[0.15em] uppercase rounded-[2px] transition-all flex items-center gap-2 group">
+                                            <button className="px-6 py-2.5 bg-[#FF3B30]/10 hover:bg-[#FF3B30]/20 border border-[#FF3B30]/20 hover:border-[#FF3B30]/40 text-[#F2F2F7] text-[12px] font-bold tracking-[0.15em] uppercase rounded-[2px] transition-all flex items-center gap-2 group">
                                                 <LogOut size={14} />
                                                 Disconnect
                                             </button>
@@ -1906,8 +2067,13 @@ const Dashboard = ({ onLogout }) => {
                                                     </h3>
                                                 </div>
 
-                                                <button className="px-10 py-4 bg-[#F2F2F7] hover:bg-white text-black text-[13px] font-bold tracking-[0.25em] uppercase rounded-[2px] transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:shadow-[0_0_50px_rgba(255,255,255,0.3)] hover:-translate-y-1">
-                                                    Re-Initialize Link
+                                                <button className="relative group px-10 py-4 border border-white overflow-hidden rounded-[2px] cursor-pointer">
+                                                    <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                                    <span className="relative z-10 text-black group-hover:text-white text-[13px] font-mono font-bold tracking-[0.25em] uppercase transition-colors duration-300">
+                                                        Re-Initialize Link
+                                                    </span>
+                                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                                                 </button>
                                             </div>
 
