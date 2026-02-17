@@ -5,6 +5,12 @@ import {
     LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera
 } from 'lucide-react'
 
+import zenthosImg from '../assets/Zenthos.png'
+import dmIcon from '../assets/dm.svg'
+import rfIcon from '../assets/rf.svg'
+import saIcon from '../assets/sa.svg'
+import teletraanLogo from '../assets/teletraan.svg'
+
 import WindowControls from './WindowControls'
 
 // === GLOBAL TYPOGRAPHY ===
@@ -13,9 +19,9 @@ const font = {
     mono: "'JetBrains Mono', monospace",
 }
 
-const RfIcon = ({ size, className }) => <img src="/rf.svg" className={className} style={{ width: size, height: size }} alt="RF" />
-const SaIcon = ({ size, className }) => <img src="/sa.svg" className={className} style={{ width: size, height: size }} alt="SA" />
-const DmIcon = ({ size, className }) => <img src="/dm.svg" className={className} style={{ width: size, height: size }} alt="DM" />
+const RfIcon = ({ size, className }) => <img src={rfIcon} className={className} style={{ width: size, height: size }} alt="RF" />
+const SaIcon = ({ size, className }) => <img src={saIcon} className={className} style={{ width: size, height: size }} alt="SA" />
+const DmIcon = ({ size, className }) => <img src={dmIcon} className={className} style={{ width: size, height: size }} alt="DM" />
 
 /* ─────────────────────────────────────
    FEED CELL
@@ -125,7 +131,7 @@ const Dashboard = ({ onLogout }) => {
         name: 'AYOBAMI ZENTHOS',
         email: 'ayobamizenthos@gmail.com',
         phone: '+2348115383780',
-        image: '/Zenthos.png',
+        image: zenthosImg,
         securityKey: '............'
     })
     const [inputMessage, setInputMessage] = useState('')
@@ -281,7 +287,7 @@ const Dashboard = ({ onLogout }) => {
                 <div className="absolute top-20 right-0 bottom-0 left-0 border-r border-t border-white/[0.06] rounded-tr-[40px] pointer-events-none" />
                 {/* Logo Area */}
                 <div className={`pl-[24px] ${sidebarHover ? 'mb-28' : 'mb-28'} flex items-center gap-4 whitespace-nowrap min-w-[max-content] transition-all duration-300 z-50`}>
-                    <img src="/teletraan.svg" className="h-9 w-auto object-contain shrink-0" alt="Teletraan" />
+                    <img src={teletraanLogo} className="h-9 w-auto object-contain shrink-0" alt="Teletraan" />
                     <span className="text-[22px] font-bold tracking-[0.1em] uppercase text-[#F2F2F7] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                         Teletraan
                     </span>
@@ -429,7 +435,7 @@ const Dashboard = ({ onLogout }) => {
                         >
                             <div className="w-7 h-7 rounded-full bg-[#111] border border-white/10 flex items-center justify-center overflow-hidden group-hover:border-[#F2F2F7] transition-all">
                                 <img
-                                    src="/Zenthos.png"
+                                    src={zenthosImg}
                                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                                     alt="Profile"
                                 />

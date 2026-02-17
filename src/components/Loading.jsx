@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShieldCheck, Zap, Server, LayoutDashboard } from 'lucide-react'
+import teletraanLogo from '../assets/teletraan.svg'
 
 const Loading = () => {
+
     const [progress, setProgress] = useState(0)
     const [phaseIndex, setPhaseIndex] = useState(0)
     const [isComplete, setIsComplete] = useState(false)
@@ -82,7 +84,7 @@ const Loading = () => {
                 >
                     <div className="absolute -inset-20 bg-white/5 filter blur-[50px] rounded-full animate-pulse px-4" />
                     <img
-                        src="/teletraan.svg"
+                        src={teletraanLogo}
                         alt="Teletraan OS"
                         className="w-[280px] md:w-[320px] relative z-20 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                     />

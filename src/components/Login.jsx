@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Shield, Lock, Mail, User } from 'lucide-react';
 import WindowControls from './WindowControls';
+import teletraanLogo from '../assets/teletraan.svg';
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('ayobamizenthos@gmail.com');
@@ -53,7 +54,7 @@ const Login = ({ onLogin }) => {
 
                             {/* Center Button with TELETRAAN LOGO */}
                             <div className="absolute z-20 w-[72px] h-[72px] bg-[#161616] rounded-[18px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-hidden">
-                                <img src="/teletraan.svg" className="w-[40px] h-[40px] opacity-90" alt="Teletraan" />
+                                <img src={teletraanLogo} className="w-[40px] h-[40px] opacity-90" alt="Teletraan" />
                             </div>
 
                             {/* LETTERS - TELETRAAN - Perfectly Curved & Centered */}
