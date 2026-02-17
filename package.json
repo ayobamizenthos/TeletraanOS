@@ -1,7 +1,7 @@
 {
   "name": "teletraanos",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.4",
   "main": "electron/main.cjs",
   "type": "module",
   "scripts": {
@@ -64,7 +64,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/teletraan.png",
+      "icon": "build/icon.png",
       "signAndEditExecutable": false
     },
     "nsis": {
