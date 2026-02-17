@@ -1,7 +1,7 @@
 {
   "name": "teletraanos",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.0",
   "main": "electron/main.cjs",
   "type": "module",
   "scripts": {
@@ -49,7 +49,7 @@
   },
   "build": {
     "appId": "com.teletraanos.app",
-    "productName": "TeletraanOS",
+    "productName": "Teletraan Pro v1.0",
     "directories": {
       "output": "dist_electron"
     },

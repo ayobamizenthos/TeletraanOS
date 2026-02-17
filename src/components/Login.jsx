@@ -16,11 +16,16 @@ const Login = ({ onLogin }) => {
         setTimeout(() => {
             setIsLoading(false);
             if (onLogin) onLogin();
-        }, 1500);
+        }, 800);
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center p-0 font-sans text-white overflow-hidden relative selection:bg-[#333] selection:text-white">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.5, filter: "blur(10px)", transition: { duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] } }}
+            className="min-h-screen bg-[#050505] flex items-center justify-center p-0 font-sans text-white overflow-hidden relative selection:bg-[#333] selection:text-white"
+        >
 
             {/* WINDOW CONTROLS - TOP RIGHT */}
             <div className="absolute top-0 right-0 p-6 z-50 scale-125 origin-top-right">
@@ -47,33 +52,50 @@ const Login = ({ onLogin }) => {
                             {/* Outer Glow */}
                             <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#1a1a1a] to-[#080808] shadow-[inset_0_2px_4px_rgba(255,255,255,0.05),0_10px_30px_rgba(0,0,0,1)]" />
 
-                            {/* Inner Letter Track */}
-                            <div className="absolute inset-[46px] rounded-full bg-[#050505] shadow-[inset_0_12px_24px_rgba(0,0,0,1),0_1px_0_rgba(255,255,255,0.05)] overflow-hidden">
-                                <div className="absolute top-[-20px] left-1/2 transform -translate-x-1/2 w-[140px] h-[50px] bg-white opacity-5 blur-xl rounded-full pointer-events-none" />
-                            </div>
+                            {/* ROTATING RING BACKGROUND - CINEMATIC ROLL */}
+                            <motion.div
+                                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            >
+                                {/* Inner Letter Track (The Rolling Grey Shape) */}
+                                <div className="absolute inset-[46px] rounded-full bg-[#050505] shadow-[inset_0_12px_24px_rgba(0,0,0,1),0_1px_0_rgba(255,255,255,0.05)] overflow-hidden flex items-center justify-center">
 
-                            {/* Center Button with TELETRAAN LOGO */}
-                            <div className="absolute z-20 w-[72px] h-[72px] bg-[#161616] rounded-[18px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-hidden">
-                                <img src={teletraanLogo} className="w-[40px] h-[40px] opacity-90" alt="Teletraan" />
-                            </div>
+                                    {/* Conic Gradient for Metallic Sheen */}
+                                    <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent_0%,rgba(255,255,255,0.05)_25%,transparent_50%,rgba(255,255,255,0.05)_75%,transparent_100%)] opacity-50" />
 
-                            {/* LETTERS - TELETRAAN - Perfectly Curved & Centered */}
+                                    {/* Mechanical Ticks / Turbine Pattern */}
+                                    <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="48" fill="none" stroke="white" strokeWidth="1" strokeDasharray="1 4" />
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="white" strokeWidth="0.5" strokeDasharray="4 8" />
+                                    </svg>
+
+                                    {/* Asymmetric Highlights */}
+                                    <div className="absolute top-0 w-[2px] h-[30px] bg-white/20 blur-[1px]" />
+                                    <div className="absolute bottom-0 w-[2px] h-[30px] bg-white/20 blur-[1px]" />
+                                    <div className="absolute left-0 w-[30px] h-[2px] bg-white/10 blur-[1px]" />
+                                    <div className="absolute right-0 w-[30px] h-[2px] bg-white/10 blur-[1px]" />
+
+                                </div>
+                            </motion.div>
+
+                            {/* LETTERS - TELETRAAN - STATIC FOREGROUND */}
                             <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                                 {/* Radius ~112px from center to hit the track middle */}
                                 {[
-                                    { char: 'T', deg: -80 },
-                                    { char: 'E', deg: -60 },
-                                    { char: 'L', deg: -40 },
-                                    { char: 'E', deg: -20 },
+                                    { char: 'T', deg: -72 },
+                                    { char: 'E', deg: -54 },
+                                    { char: 'L', deg: -36 },
+                                    { char: 'E', deg: -18 },
                                     { char: 'T', deg: 0 },
-                                    { char: 'R', deg: 20 },
-                                    { char: 'A', deg: 40 },
-                                    { char: 'A', deg: 60 },
-                                    { char: 'N', deg: 80 }
+                                    { char: 'R', deg: 18 },
+                                    { char: 'A', deg: 36 },
+                                    { char: 'A', deg: 54 },
+                                    { char: 'N', deg: 72 }
                                 ].map((item, i) => (
                                     <span
                                         key={i}
-                                        className="absolute text-[15px] font-sans text-white font-bold"
+                                        className="absolute text-[32px] font-sans text-white font-black tracking-widest drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)]"
                                         style={{
                                             transform: `rotate(${item.deg}deg) translateY(-112px)`,
                                         }}
@@ -81,6 +103,17 @@ const Login = ({ onLogin }) => {
                                         {item.char}
                                     </span>
                                 ))}
+                            </div>
+
+                            {/* Center Button with TELETRAAN LOGO (STATIC) */}
+                            <div className="absolute z-20 w-[100px] h-[100px] bg-[#161616] rounded-[24px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-visible">
+                                <motion.img
+                                    layoutId="teletraan-hero-logo"
+                                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                                    src={teletraanLogo}
+                                    className="w-[64px] h-[64px] opacity-90 object-contain"
+                                    alt="Teletraan"
+                                />
                             </div>
 
                             {/* CONNECTING LINES - SVG - Centered */}
@@ -115,83 +148,100 @@ const Login = ({ onLogin }) => {
 
                 </div>
 
-                {/* RIGHT SIDE: LOGIN FORM (UPDATED TO DARK THEME & SIZING) */}
+                {/* RIGHT SIDE: LOGIN FORM (RESTORED) */}
                 <div className="flex-1 flex flex-col items-end justify-center pr-0 mr-[-60px]">
 
                     <div className="w-full max-w-[550px] flex flex-col gap-5">
 
                         {/* Centered Heading */}
                         <div className="text-center mb-8">
-                            <h1 className="text-[48px] font-sans font-medium tracking-[0.2em] text-white uppercase mb-6">TELETRAAN</h1>
+                            <h1 className="text-[48px] font-sans font-bold tracking-[0.2em] text-white uppercase mb-6 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">TELETRAAN</h1>
 
-                            {/* Sign In Header Box */}
-                            <div className="w-full border-t border-b border-white/20 bg-[#111] py-4 flex items-center justify-center">
-                                <span className="text-[18px] font-medium text-white tracking-[0.05em]">Sign In</span>
+                            {/* Sign In Header Box - Tactical */}
+                            <div className="w-full relative py-4 flex items-center justify-center">
+                                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+                                <span className="text-[16px] font-mono font-bold text-white tracking-[0.2em] uppercase">System Access</span>
                             </div>
                         </div>
 
                         {/* Inputs */}
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
                             {/* Email */}
-                            <div className="flex flex-col gap-3">
-                                <label className="text-[14px] text-[#CCC] font-medium font-sans ml-1">Email</label>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-mono text-[#888] tracking-[0.1em] uppercase ml-1">User ID</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                                        <User size={20} className="text-[#666] group-focus-within:text-[#999] transition-colors" />
+                                        <User size={18} className="text-[#555] group-focus-within:text-white transition-colors" />
                                     </div>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full h-[64px] bg-[#161616] text-white pl-16 pr-6 text-[16px] font-medium outline-none border border-white/10 focus:border-white/30 rounded-[2px] placeholder:text-[#444] transition-all"
-                                        placeholder="Enter Email"
+                                        className="w-full h-[64px] bg-[#0F0F0F] text-white pl-16 pr-6 text-[15px] font-mono outline-none border border-white/10 focus:border-white/40 focus:bg-[#141414] rounded-[2px] placeholder:text-[#333] transition-all"
+                                        placeholder="ENTER EMAIL"
                                     />
+                                    {/* Corner Accents */}
+                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20 group-focus-within:border-white/60 transition-colors" />
+                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20 group-focus-within:border-white/60 transition-colors" />
                                 </div>
                             </div>
 
                             {/* Password */}
-                            <div className="flex flex-col gap-3">
-                                <label className="text-[14px] text-[#CCC] font-medium font-sans ml-1">Password</label>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-[11px] font-mono text-[#888] tracking-[0.1em] uppercase ml-1">Passkey</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                                        <Lock size={20} className="text-[#666] group-focus-within:text-[#999] transition-colors" />
+                                        <Lock size={18} className="text-[#555] group-focus-within:text-white transition-colors" />
                                     </div>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full h-[64px] bg-[#161616] text-white pl-16 pr-16 text-[16px] font-medium outline-none border border-white/10 focus:border-white/30 rounded-[2px] tracking-widest placeholder:text-[#444] transition-all"
-                                        placeholder="Enter Password"
+                                        className="w-full h-[64px] bg-[#0F0F0F] text-white pl-16 pr-16 text-[15px] font-mono outline-none border border-white/10 focus:border-white/40 focus:bg-[#141414] rounded-[2px] tracking-[0.2em] placeholder:text-[#333] transition-all"
+                                        placeholder="••••••••••••"
                                     />
+                                    {/* Corner Accents */}
+                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20 group-focus-within:border-white/60 transition-colors" />
+                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20 group-focus-within:border-white/60 transition-colors" />
+
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute inset-y-0 right-0 pr-6 flex items-center text-[#666] hover:text-[#AAA] transition-colors"
+                                        className="absolute inset-y-0 right-0 pr-6 flex items-center text-[#555] hover:text-white transition-colors"
                                     >
-                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
                             </div>
 
                             {/* Forgot Password */}
-                            <div className="flex justify-start mt-[-10px]">
-                                <a href="#" className="text-[13px] text-[#888] hover:text-[#CCC] transition-colors underline decoration-white/10 hover:decoration-white/50">
-                                    Forgot Password?
+                            <div className="flex justify-start mt-[-5px]">
+                                <a href="#" className="text-[11px] font-mono text-[#666] hover:text-white transition-colors uppercase tracking-widest hover:underline decoration-white/20">
+                                    [ RESET CREDENTIALS ]
                                 </a>
                             </div>
 
                             {/* Sign In Button - PREMIUM REDESIGN - Previous Size */}
                             <div className="flex justify-center mt-6">
-                                <motion.button
-                                    whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(255,255,255,0.4)" }}
-                                    whileTap={{ scale: 0.95 }}
+                                <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className={`w-[220px] h-[50px] bg-gradient-to-r from-[#E0E0E0] via-[#F5F5F5] to-[#E0E0E0] text-black font-bold text-[15px] tracking-[0.1em] uppercase shadow-[0_5px_15px_rgba(0,0,0,0.5)] flex items-center justify-center rounded-[4px] border border-white/50 transition-all ${isLoading ? 'opacity-80' : ''}`}
+                                    className={`relative group w-[240px] h-[54px] border border-white overflow-hidden rounded-[2px] cursor-pointer ${isLoading ? 'opacity-80' : ''}`}
                                 >
-                                    {isLoading ? 'Loading...' : 'Sign In'}
-                                </motion.button>
+                                    {/* Solid White Sliding Background - Default Visible, Slides Right on Hover */}
+                                    <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+
+                                    {/* Content Layer */}
+                                    <span className="relative z-10 font-bold font-mono text-[13px] tracking-[0.25em] uppercase text-black group-hover:text-white transition-colors duration-300">
+                                        {isLoading ? 'INITIALIZING...' : 'SIGN IN'}
+                                    </span>
+
+                                    {/* Tactical Corners (Visible on Hover/Transparent state) */}
+                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                </button>
                             </div>
 
                         </form>
@@ -201,7 +251,7 @@ const Login = ({ onLogin }) => {
                 </div>
 
             </div>
-        </div>
+        </motion.div>
     );
 };
 

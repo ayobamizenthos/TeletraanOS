@@ -95,10 +95,17 @@ const UpdateNotification = () => {
                     {content.showRestart && (
                         <button
                             onClick={handleRestart}
-                            className="flex items-center gap-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-[12px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded transition-all hover:scale-105"
+                            className="relative group px-4 py-2 border border-white overflow-hidden rounded-[2px] cursor-pointer flex items-center gap-2 ml-4"
                         >
-                            <RefreshCw size={12} />
-                            Restart Now
+                            <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                            <div className="relative z-10 flex items-center gap-1.5">
+                                <RefreshCw size={12} className="text-black group-hover:text-white transition-colors duration-300" />
+                                <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-black group-hover:text-white transition-colors duration-300">
+                                    Restart Now
+                                </span>
+                            </div>
+                            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                            <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
                         </button>
                     )}
 

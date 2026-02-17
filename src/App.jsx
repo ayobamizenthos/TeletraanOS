@@ -15,7 +15,7 @@ function App() {
 
     return (
         <div className="bg-void w-screen h-screen overflow-hidden text-white font-sans selection:bg-[#00FF41] selection:text-black">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
                 {stage === 'auth' && <Login onLogin={handleLogin} key="login" />}
                 {stage === 'loading' && <Loading key="loading" />}
                 {stage === 'active' && <Dashboard key="dashboard" onLogout={() => setStage('auth')} />}

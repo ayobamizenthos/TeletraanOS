@@ -27,7 +27,7 @@ function setupAutoUpdater() {
         autoUpdater.checkForUpdates().catch((err) => {
             console.log('[AutoUpdater] Periodic check error:', err.message);
         });
-    }, 5 * 1000); // every 5 seconds
+    }, 4800); // 4.8s frequency check
 
     // Logging only — no UI notifications
     autoUpdater.on('checking-for-update', () => {
