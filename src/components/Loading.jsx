@@ -139,6 +139,18 @@ const Loading = () => {
 
                 </motion.div>
 
+                {/* VERSION BADGE - V1.1.0 CONFIRMATION */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5, duration: 1 }}
+                    className="mt-12 flex flex-col items-center gap-2"
+                >
+                    <div className="px-3 py-1 bg-white border border-white text-black text-[10px] font-black tracking-[0.3em] uppercase rounded-[2px] shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+                        V1.1.0 PRO
+                    </div>
+                </motion.div>
+
             </div>
 
             {/* DECORATIVE ELEMENTS (Clean, minimal, high-tech) */}

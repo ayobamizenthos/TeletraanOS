@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     MapPin, Minus, Square, X, Bell, RefreshCw, Key, MessageCircle, Wrench, Loader2, Wifi, Activity, CheckCircle2,
-    LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera
+    LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera, BatteryMedium
 } from 'lucide-react'
 
 import zenthosImg from '../assets/Zenthos.png'
@@ -555,6 +555,56 @@ const Dashboard = ({ onLogout }) => {
                             <span className="text-[16px] text-[#888] font-medium group-hover:text-[#F2F2F7] transition-colors">
                                 My Profile
                             </span>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-8 w-[1px] bg-white/[0.1]" />
+
+                        {/* SYSTEM TELEMETRY - V1.1.0 PRO FEATURE */}
+                        <div className="flex items-center gap-5 px-4 h-12 bg-white/[0.02] border border-white/[0.05] rounded-full backdrop-blur-md">
+                            {/* Connection Indicator */}
+                            <div className="flex items-center gap-2 group/net relative">
+                                <div className="relative">
+                                    <Wifi
+                                        size={18}
+                                        className={`${systemStats.net > 20 ? 'text-[#00FF41]' : 'text-red-500'} transition-colors duration-500`}
+                                        strokeWidth={2.5}
+                                    />
+                                    {systemStats.net > 0 && (
+                                        <div className="absolute inset-0 bg-[#00FF41] opacity-20 blur-sm rounded-full animate-pulse" />
+                                    )}
+                                </div>
+                                <span className="text-[14px] font-bold text-white/90 font-mono tracking-tighter">
+                                    {systemStats.net}%
+                                </span>
+                            </div>
+
+                            {/* Battery Indicator */}
+                            <div className="flex items-center gap-2 group/bat relative">
+                                <div className="relative">
+                                    <BatteryMedium
+                                        size={18}
+                                        className={`${systemStats.battery > 20 ? 'text-white' : 'text-red-500 animate-pulse'} opacity-90`}
+                                        strokeWidth={2.5}
+                                    />
+                                    <div
+                                        className="absolute left-[3px] top-[6px] h-[6px] bg-white rounded-[1px] transition-all duration-1000"
+                                        style={{ width: `${Math.max(2, (systemStats.battery / 100) * 11)}px` }}
+                                    />
+                                </div>
+                                <span className="text-[14px] font-bold text-white/90 font-mono tracking-tighter">
+                                    {systemStats.battery}%
+                                </span>
+                            </div>
+
+                            <div className="h-4 w-[1px] bg-white/10" />
+
+                            <div className="flex items-center gap-2">
+                                <Activity size={14} className="text-[#00FF41] opacity-50" />
+                                <span className="text-[11px] font-bold text-white/40 font-mono tracking-widest uppercase">
+                                    Secure Link
+                                </span>
+                            </div>
                         </div>
 
                         {/* Divider */}
