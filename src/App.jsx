@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard';
 import { AnimatePresence } from 'framer-motion';
 
 function App() {
-    const [stage, setStage] = useState('auth'); // 'auth', 'loading', 'active' - Force Update
+    const [stage, setStage] = useState('auth'); // STAGE: [AUTH_READY_V2.0]
 
     const handleLogin = () => {
         setStage('loading');
