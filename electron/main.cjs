@@ -101,9 +101,16 @@ function createWindow() {
     });
 
     if (isDev) {
-        mainWindow.webContents.session.clearCache().then(() => {
-            mainWindow.loadURL('http://localhost:5173');
-        });
+        // Retry connecting to Vite dev server — it may not be ready yet
+        const loadDevURL = () => {
+            mainWindow.webContents.session.clearCache().then(() => {
+                mainWindow.loadURL('http://localhost:5173').catch((err) => {
+                    console.log('[Dev] Vite not ready yet, retrying in 500ms...', err.message);
+                    setTimeout(loadDevURL, 500);
+                });
+            });
+        };
+        loadDevURL();
     } else {
         mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
     }
