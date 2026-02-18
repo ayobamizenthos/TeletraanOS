@@ -109,32 +109,35 @@ const Loading = () => {
                         </AnimatePresence>
                     </div>
 
-                    {/* PROFESSIONAL BORDERLESS LOADING BAR - THICKER & SHORTER */}
-                    <div className="relative w-full max-w-sm h-[4px] bg-white/[0.08] rounded-full overflow-hidden">
-                        {/* High-Speed Scanline Track */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
+                    {/* PROFESSIONAL BORDERLESS LOADING BAR ASSEMBLY */}
+                    <div className="relative w-full max-w-sm flex items-center">
+                        {/* The Loading Line / Track */}
+                        <div className="relative w-full h-[4px] bg-white/[0.08] rounded-full overflow-hidden">
+                            {/* High-Speed Scanline Track */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
 
-                        {/* Progress Fill (Premium Glow) */}
-                        <motion.div
-                            className="absolute top-0 left-0 h-full bg-white shadow-[0_0_25px_rgba(255,255,255,0.6)]"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-
-                    {/* EDGE-MOUNTED CAMERA ICON (NO BORDERS) - Positioned outside the overflow-hidden container to be visible */}
-                    <div className="relative w-full max-w-sm h-0">
-                        <motion.div
-                            className="absolute top-0 -translate-y-1/2 -translate-x-1/2 pointer-events-none"
-                            style={{ left: `${progress}%` }}
-                        >
-                            <img
-                                src={dmIcon}
-                                className="w-7 h-7 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.9)] filter brightness-200"
-                                alt="System Link"
+                            {/* Progress Fill (Premium Glow) */}
+                            <motion.div
+                                className="absolute top-0 left-0 h-full bg-white shadow-[0_0_25px_rgba(255,255,255,0.6)]"
+                                style={{ width: `${progress}%` }}
                             />
-                            {/* Subtle Radial Pulse */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-white/30 animate-ping opacity-20" />
-                        </motion.div>
+                        </div>
+
+                        {/* THE CAMERA ICON - Pinned exactly to the leading edge of the line */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            <motion.div
+                                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+                                style={{ left: `${progress}%` }}
+                            >
+                                <img
+                                    src={dmIcon}
+                                    className="w-8 h-8 text-white drop-shadow-[0_0_20px_rgba(255,255,255,1)] filter brightness-[2.5]"
+                                    alt="Uplink"
+                                />
+                                {/* Sub-atomic pulse */}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-white/20 animate-ping opacity-10" />
+                            </motion.div>
+                        </div>
                     </div>
 
                 </div>
