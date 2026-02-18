@@ -32,6 +32,9 @@ const Loading = ({ onComplete }) => {
             {/* ─── TACTICAL ATMOSPHERE ─── */}
             <div className="absolute inset-0 bg-[#050505]" />
 
+            {/* Background Grain/Noise */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
             {/* Dynamic Geometric Grid */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
                 style={{
@@ -42,8 +45,8 @@ const Loading = ({ onComplete }) => {
 
             {/* Cinematic Lens Flares */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-                <div className="absolute top-[-10%] left-[-20%] w-[120%] h-[40%] bg-gradient-to-b from-white/[0.03] to-transparent skew-y-[-15deg]" />
-                <div className="absolute bottom-[-10%] right-[-20%] w-[120%] h-[40%] bg-gradient-to-t from-white/[0.03] to-transparent skew-y-[-15deg]" />
+                <div className="absolute top-[-10%] left-[-20%] w-[120%] h-[40%] bg-gradient-to-b from-white/[0.04] to-transparent skew-y-[-15deg]" />
+                <div className="absolute bottom-[-10%] right-[-20%] w-[120%] h-[40%] bg-gradient-to-t from-white/[0.04] to-transparent skew-y-[-15deg]" />
             </div>
 
             {/* ─── CENTRAL LOGO ARCHITECTURE (THE DESIGN) ─── */}
@@ -51,43 +54,59 @@ const Loading = ({ onComplete }) => {
 
                 <div className="relative mb-40 flex items-center justify-center">
 
-                    {/* HOLOGRAPHIC COMPASS RINGS (TRIPLE LAYER) */}
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                        className="absolute w-[680px] h-[680px] opacity-[0.07]"
-                    >
-                        <div className="w-full h-full rounded-full border border-dashed border-white/40" />
-                        {/* Orbiting Tech Nodes */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 border border-white/50 rounded-sm bg-black" />
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 border border-white/50 rounded-sm bg-black" />
-                    </motion.div>
+                    {/* CORE NEURAL SYNC (Behind Logo) */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        {/* Primary Pulse Ring */}
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.25, 1],
+                                opacity: [0.1, 0.3, 0.1]
+                            }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute w-[800px] h-[800px] bg-white/[0.02] rounded-full blur-[100px]"
+                        />
 
-                    <motion.div
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        className="absolute w-[580px] h-[580px] opacity-[0.05]"
-                    >
-                        <div className="w-full h-full rounded-full border-[2px] border-white/20" />
-                        {/* Dynamic Scale Markers */}
-                        <div className="absolute top-1/2 -translate-y-1/2 left-0 w-8 h-[2px] bg-white/40" />
-                        <div className="absolute top-1/2 -translate-y-1/2 right-0 w-8 h-[2px] bg-white/40" />
-                    </motion.div>
+                        {/* Progressive Energy Core */}
+                        <motion.div
+                            style={{
+                                scale: 0.5 + (progress / 100) * 0.5,
+                                opacity: 0.05 + (progress / 100) * 0.1
+                            }}
+                            className="absolute w-[600px] h-[600px] bg-white rounded-full blur-[150px]"
+                        />
 
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className="absolute w-[480px] h-[480px] opacity-[0.03]"
-                    >
-                        <div className="w-full h-full rounded-full border border-white/10" style={{ borderStyle: 'dotted' }} />
-                    </motion.div>
+                        {/* Rotating Data Lattice (Outer) */}
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 40 - (progress / 100) * 20, repeat: Infinity, ease: "linear" }}
+                            className="absolute w-[750px] h-[750px] opacity-[0.06]"
+                        >
+                            <div className="w-full h-full rounded-full border border-dashed border-white/30" />
+                        </motion.div>
+
+                        {/* Shimmering Halo */}
+                        <motion.div
+                            animate={{
+                                rotate: -360,
+                                scale: [1, 1.05, 1]
+                            }}
+                            transition={{
+                                rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+                                scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+                            }}
+                            className="absolute w-[550px] h-[550px] opacity-[0.04]"
+                        >
+                            <div className="w-full h-full rounded-full border-[3px] border-white/20" />
+                        </motion.div>
+                    </div>
 
                     {/* NEXUS LOGO ANIMATION */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{
-                            opacity: [0.7, 1, 0.7],
-                            scale: [1, 1.02, 1]
+                            opacity: [0.9, 1, 0.9],
+                            scale: [1, 1.02, 1],
+                            filter: [`brightness(1) blur(0px)`, `brightness(1.15) blur(0px)`, `brightness(1) blur(1px)`]
                         }}
                         transition={{
                             duration: 5,
@@ -96,54 +115,51 @@ const Loading = ({ onComplete }) => {
                         }}
                         className="relative z-10 flex items-center justify-center"
                     >
-                        {/* Core Aura */}
-                        <div className="absolute -inset-40 bg-white/[0.02] blur-[120px] rounded-full" />
-
                         {/* THE LOGO */}
-                        <img src={teletraanLogo} className="w-[500px] h-auto relative z-20 drop-shadow-[0_0_80px_rgba(255,255,255,0.15)] filter brightness-110" alt="Teletraan" />
-
-                        {/* HORIZONTAL SCANLINE (LASER) */}
-                        <motion.div
-                            animate={{ top: ['-20%', '120%'], opacity: [0, 1, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute left-0 right-0 h-[3px] bg-white shadow-[0_0_20px_white] z-30 blur-[1px]"
+                        <img
+                            src={teletraanLogo}
+                            className="w-[500px] h-auto relative z-20 drop-shadow-[0_0_100px_rgba(255,255,255,0.2)]"
+                            alt="Teletraan"
                         />
 
-                        {/* DATA BURST RINGS (REACTIVE) */}
+                        {/* REACTIVE BLOOM EFFECT */}
                         <motion.div
-                            animate={{ scale: [1, 1.4], opacity: [0.3, 0] }}
-                            transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
-                            className="absolute w-[300px] h-[300px] border border-white/20 rounded-full"
+                            animate={{
+                                scale: [1, 1.5],
+                                opacity: [0.2, 0]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                            className="absolute w-[350px] h-[350px] border border-white/30 rounded-full"
                         />
                     </motion.div>
 
-                    {/* FLOATING HUD BRACKETS */}
-                    <div className="absolute inset-[-100px] pointer-events-none opacity-30">
-                        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-white/20" />
-                        <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-white/20" />
-                        <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-white/20" />
-                        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-white/20" />
+                    {/* OPTICAL BRACKETS */}
+                    <div className="absolute inset-[-120px] pointer-events-none opacity-20">
+                        <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-white/30" />
+                        <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-white/30" />
+                        <div className="absolute bottom-0 left-0 w-16 h-16 border-b border-l border-white/30" />
+                        <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-white/30" />
                     </div>
                 </div>
 
-                {/* ─── MINIMALIST LOADING INTERFACE (NO TEXTS) ─── */}
+                {/* ─── MINIMALIST LOADING INTERFACE ─── */}
                 <div className="w-full max-w-sm flex flex-col items-center">
 
                     {/* BORDERLESS LOADING BAR ASSEMBLY */}
                     <div className="relative w-full flex items-center">
                         {/* The Loading Line */}
-                        <div className="relative w-full h-[4px] bg-white/[0.05] rounded-full overflow-hidden">
-                            {/* Glow Track */}
-                            <div className="absolute inset-0 bg-white/[0.02]" />
+                        <div className="relative w-full h-[4px] bg-white/[0.05] rounded-full">
+                            {/* Static Track Glow */}
+                            <div className="absolute inset-0 bg-white/[0.02] blur-[1px]" />
 
                             {/* Progress Fill */}
                             <motion.div
-                                className="absolute top-0 left-0 h-full bg-white shadow-[0_0_40px_white]"
+                                className="absolute top-0 left-0 h-full bg-white shadow-[0_0_40px_rgba(255,255,255,0.8)]"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
 
-                        {/* THE CAMERA ICON (EDGE-MOUNTED REFINED) */}
+                        {/* THE CAMERA ICON (EDGE-MOUNTED) */}
                         <div className="absolute inset-0 pointer-events-none">
                             <motion.div
                                 className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
@@ -151,14 +167,14 @@ const Loading = ({ onComplete }) => {
                             >
                                 <img
                                     src={dmIcon}
-                                    className="w-9 h-9 text-white drop-shadow-[0_0_25px_white] filter brightness-[3]"
+                                    className="w-9 h-9 text-white drop-shadow-[0_0_30px_white] filter brightness-[3]"
                                     alt="Link"
                                 />
-                                {/* High-Frequency Ping */}
+                                {/* Progressive Pulse Efficiency */}
                                 <motion.div
-                                    animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
-                                    transition={{ duration: 1, repeat: Infinity }}
-                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-white/40"
+                                    animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+                                    transition={{ duration: 1.2, repeat: Infinity }}
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-white/50"
                                 />
                             </motion.div>
                         </div>
@@ -168,7 +184,7 @@ const Loading = ({ onComplete }) => {
             </div>
 
             {/* Cinematic Vignette */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.9)_100%)] pointer-events-none z-50" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)] pointer-events-none z-50" />
         </div>
     )
 }
