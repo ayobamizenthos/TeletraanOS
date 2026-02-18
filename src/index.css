@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* === TELETRAAN SOVEREIGN DESIGN SYSTEM === */
+
+@theme {
+    --color-obsidian: #010101;
+    --color-void: #000000;
+    --color-signal-green: #00FF41;
+    --color-ghost-grey: #F2F2F7;
+    --color-titanium: rgba(255, 255, 255, 0.06);
+    --color-titanium-highlight: rgba(255, 255, 255, 0.1);
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --ease-power: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--color-void);
+}
+
+body {
+    /* THE VANTABLACK DEPTH */
+    background: radial-gradient(circle at 50% 0%, #111111 0%, #000000 100%);
+    color: var(--color-ghost-grey);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* === MATERIAL PHYSICS === */
+
+.bezel-titanium {
+    border: 1px solid var(--color-titanium);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
+}
+
+.green-bloom {
+    filter: drop-shadow(0 0 8px var(--color-signal-green));
+}
+
+.text-bloom {
+    text-shadow: 0 0 12px rgba(0, 255, 65, 0.4);
+}
+
+/* ELECTRON DRAG */
+.electron-draggable {
+    -webkit-app-region: drag;
+}
+
+.no-drag {
+    -webkit-app-region: no-drag;
+}
+
+/* SCROLLBAR - INVISIBLE */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+/* === ANIMATIONS === */
+@keyframes pulse-scan {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.animate-scan-line {
+    animation: pulse-scan 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
