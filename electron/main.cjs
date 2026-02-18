@@ -131,6 +131,7 @@ function createWindow() {
     // SYSTEM LOGIC: Real Telemetry (Battery & Network)
     let batteryLevel = 100;
     let isConnected = true;
+    let manualOffline = false; // Manual Kill Switch
     const startTime = Date.now();
 
     // Function to get real battery level via WMIC
@@ -162,9 +163,8 @@ function createWindow() {
     }
 
     ipcMain.on('toggle-network', () => {
-        console.log('[System] Force Resync Triggered');
-        updateBatteryLevel();
-        updateNetworkStatus();
+        manualOffline = !manualOffline;
+        console.log(`[System] Tactical Override: ${manualOffline ? 'OFFLINE' : 'ONLINE'}`);
         broadcastStats();
     });
 
@@ -173,7 +173,7 @@ function createWindow() {
 
         const stats = {
             battery: batteryLevel,
-            net: isConnected ? 1 : 0, // 1 = Connected, 0 = Offline
+            net: (isConnected && !manualOffline) ? 1 : 0, // Force 0 if manual offline
             uptime: Math.floor((Date.now() - startTime) / 1000)
         };
 
