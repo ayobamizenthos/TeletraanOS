@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import teletraanLogo from '../assets/teletraan.svg'
 import dmIcon from '../assets/dm.svg'
 
-const Loading = () => {
+const Loading = ({ onComplete }) => {
     const [progress, setProgress] = useState(0)
 
     const phrases = [
@@ -25,11 +25,15 @@ const Loading = () => {
 
             if (nextProgress >= 100) {
                 clearInterval(interval)
+                // Small buffer to let the user see the 100% state before transition
+                setTimeout(() => {
+                    onComplete?.();
+                }, 400);
             }
         }, 30)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [onComplete])
 
     return (
         <div className="fixed inset-0 bg-[#030303] flex flex-col items-center justify-center z-[200] overflow-hidden">
