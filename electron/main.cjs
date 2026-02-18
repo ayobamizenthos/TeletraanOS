@@ -118,6 +118,44 @@ function createWindow() {
         }
     });
     ipcMain.on('window-close', () => mainWindow.close());
+
+    // SYSTEM LOGIC: Network & Stats
+    let isOffline = false;
+    let batteryLevel = 100;
+    const startTime = Date.now();
+
+    ipcMain.on('toggle-network', () => {
+        isOffline = !isOffline;
+        console.log(`[System] Network status: ${isOffline ? 'OFFLINE' : 'ONLINE'}`);
+        // Immediate broadcast of new state
+        broadcastStats();
+    });
+
+    function broadcastStats() {
+        if (!mainWindow) return;
+
+        const stats = {
+            battery: batteryLevel,
+            net: isOffline ? 0 : 1, // 0 = Offline, 1 = Connected
+            uptime: Math.floor((Date.now() - startTime) / 1000)
+        };
+
+        mainWindow.webContents.send('system-stats', stats);
+    }
+
+    // Emit stats every 2 seconds
+    const statsInterval = setInterval(() => {
+        // Subtle battery drain simulation
+        if (batteryLevel > 1) {
+            batteryLevel -= Math.random() * 0.05;
+        }
+        broadcastStats();
+    }, 2000);
+
+    mainWindow.on('closed', () => {
+        clearInterval(statsInterval);
+        mainWindow = null;
+    });
 }
 
 // ─── APP LIFECYCLE ───────────────────────────────────────────────────────────

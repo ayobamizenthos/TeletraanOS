@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+﻿import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     MapPin, Minus, Square, X, Bell, RefreshCw, Key, MessageCircle, Wrench, Loader2, Wifi, Activity, CheckCircle2,
-    LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera
+    LayoutGrid, FileText, Shield, Users, Settings, LogOut, Video, Radio, WifiOff, FileWarning, MessageSquareMore, Paperclip, Mic, ArrowRight, Plus, Cctv, Search, ChevronDown, Edit2, ChevronLeft, ChevronRight, AlertTriangle, ScanFace, DoorOpen, Sofa, Car, TreePine, Utensils, Camera, BatteryMedium, Link, Maximize, Power
 } from 'lucide-react'
 
 import zenthosImg from '../assets/Zenthos.png'
@@ -24,94 +24,121 @@ const RfIcon = ({ size, className }) => <img src={rfIcon} className={className} 
 const SaIcon = ({ size, className }) => <img src={saIcon} className={className} style={{ width: size, height: size }} alt="SA" />
 const DmIcon = ({ size, className }) => <img src={dmIcon} className={className} style={{ width: size, height: size }} alt="DM" />
 
-/* ─────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    FEED CELL
-   ───────────────────────────────────── */
-const FeedCell = ({ label, active = true, alert = false, offline = false }) => (
-    <div className="relative w-full h-full bg-[#050505] overflow-hidden flex flex-col border border-white/[0.06] rounded-2xl group">
-        {offline ? (
-            // OFFLINE STATE
-            <>
-                <div className="absolute inset-0 bg-[#080808]">
-                    {/* Dark Static Noise */}
-                    <div className="w-full h-full opacity-[0.15]"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
-                    />
-                    {/* Diagonal Hazard Pattern */}
-                    <div className="absolute inset-0 opacity-[0.03]"
-                        style={{ backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 10px, #222 10px, #222 20px)' }}
-                    />
-                </div>
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+const FeedCell = ({ label, active = true, alert = false, offline = false, systemNet = 100 }) => {
+    const camId = useRef(`OX-${Math.random().toString(36).substr(2, 4).toUpperCase()}-${Math.random().toString(10).substr(2, 2)}`);
 
-                {/* Glitch Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-50 z-20">
-                    <motion.div
-                        animate={{ opacity: [0.3, 0.6, 0.3] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                        <WifiOff size={48} className="text-[#444]" strokeWidth={1} />
-                    </motion.div>
-                    <div className="flex flex-col items-center gap-1 mt-2">
-                        <span className="text-[#555] font-mono text-[24px] tracking-[0.2em] font-bold">SIGNAL LOST</span>
-                        <span className="text-[#333] font-mono text-[14px] tracking-widest uppercase">Check Connection Wire</span>
+    // Previous signal bar simulation - now scaled by real system net
+    const [signal, setSignal] = useState(4);
+    const isActuallyOffline = offline || systemNet === 0;
+
+    useEffect(() => {
+        if (isActuallyOffline) return;
+        const interval = setInterval(() => {
+            // Local jitter but capped by system net
+            const maxBars = systemNet > 80 ? 4 : systemNet > 50 ? 3 : systemNet > 20 ? 2 : 1;
+            setSignal(prev => {
+                const jitter = Math.random() > 0.5 ? 1 : -1;
+                return Math.max(1, Math.min(maxBars, prev + jitter));
+            });
+        }, 8000);
+        return () => clearInterval(interval);
+    }, [isActuallyOffline, systemNet]);
+
+    return (
+        <div className="relative w-full h-full bg-[#050505] overflow-hidden flex flex-col border border-white/[0.08] rounded-[4px] group transition-all duration-500 hover:border-white/20">
+            {/* VIGNETTE & GRAIN LAYER */}
+            <div className="absolute inset-0 z-10 pointer-events-none opacity-[0.15]"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40 z-10 pointer-events-none" />
+
+            {isActuallyOffline ? (
+                <>
+                    {/* OFFLINE STATE - CRT STATIC */}
+                    <div className="absolute inset-0 bg-[#080808]">
+                        <div className="w-full h-full opacity-[0.2]"
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
+                        />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-20">
+                            <motion.div
+                                animate={{ opacity: [0.2, 0.5, 0.2] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="flex flex-col items-center"
+                            >
+                                <WifiOff size={42} className="text-white/40 mb-3" strokeWidth={1.5} />
+                                <span className="text-white/50 font-mono text-[11px] tracking-[0.4em] uppercase font-bold">
+                                    {systemNet === 0 ? 'Scanning...' : 'Signal Lost'}
+                                </span>
+                            </motion.div>
+                        </div>
                     </div>
-                </div>
-
-                {/* Offline Label */}
-                <div className="absolute top-3 left-9 flex items-center gap-2 z-10 opacity-50">
-                    <span style={{ fontFamily: font.mono, fontSize: '16px', fontWeight: 500, color: '#666', letterSpacing: '0.05em' }}>
-                        {label} <span className="text-[12px] text-[#C43E3E] ml-2 tracking-widest">[OFFLINE]</span>
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#333]" />
-                </div>
-            </>
-        ) : (
-            // ONLINE STATE
-            <>
-                <div className="absolute inset-0 bg-[#080808]">
-                    <div className="w-full h-full opacity-[0.03] pointer-events-none"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
+                </>
+            ) : (
+                <>
+                    {/* ONLINE STATE - SCANNING & GRID */}
+                    <div className="absolute inset-0 opacity-[0.25]"
+                        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '32px 32px' }}
                     />
-                    <div className="absolute inset-0 opacity-[0.12] pointer-events-none"
-                        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '48px 48px' }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent h-[20%] w-full animate-scan pointer-events-none" style={{ animationDuration: '8s' }} />
-                    {alert && <div className="absolute inset-0 bg-[#C43E3E] opacity-10 animate-pulse" />}
-                </div>
 
-                <div className="absolute top-1/2 left-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-20">
-                    <div className="w-[1px] h-full bg-white" />
-                    <div className="absolute h-[1px] w-full bg-white" />
-                </div>
+                    {/* Animated Scanline - Ultra-Slow Cinematic Sweep */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.05] to-transparent h-[10%] w-full animate-scan pointer-events-none" style={{ animationDuration: '24s' }} />
 
-                <div className="absolute top-3 left-9 flex items-center gap-2 z-10">
-                    <span style={{ fontFamily: font.mono, fontSize: '16px', fontWeight: 500, color: '#F2F2F7', letterSpacing: '0.05em', textShadow: '0 1px 4px rgba(0,0,0,1)', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
-                        {label}
-                    </span>
-                    {active && <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41]" style={{ boxShadow: '0 0 15px #00FF41' }} />}
-                </div>
-
-                {alert && (
-                    <div className="absolute top-3 right-9 flex items-center gap-1.5 z-10">
-                        <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
-                        <span style={{ fontFamily: font.mono, fontSize: '12px', color: '#8E8E93', opacity: 0.8 }}>REC</span>
+                    {/* Crosshair (Subtle) */}
+                    <div className="absolute top-1/2 left-1/2 w-6 h-6 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-20 pointer-events-none bg-white/[0.05] rounded-full">
+                        <div className="w-[1px] h-4 bg-white/40" />
+                        <div className="absolute h-[1px] w-4 bg-white/40" />
                     </div>
-                )}
-            </>
-        )}
 
-        {/* Global Corner Markers */}
-        <div className={`absolute top-4 left-4 w-4 h-4 border-t border-l ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute top-4 right-4 w-4 h-4 border-t border-r ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute bottom-4 left-4 w-4 h-4 border-b border-l ${offline ? 'border-[#333]' : 'border-white/30'}`} />
-        <div className={`absolute bottom-4 right-4 w-4 h-4 border-b border-r ${offline ? 'border-[#333]' : 'border-white/30'}`} />
+                    {/* TOP INFO BAR */}
+                    <div className="absolute top-4 left-6 right-6 flex justify-between items-start z-20">
+                        <div className="flex items-center gap-2">
+                            <div className={`w-1.5 h-1.5 rounded-full ${alert ? 'bg-red-500 animate-pulse' : 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]'}`} />
+                            <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase">{label || 'SOURCE-01'}</span>
+                        </div>
 
-    </div>
-)
+                        {/* SIGNAL BARS - NOW REACTIVE TO SYSTEM NET */}
+                        <div className="flex items-end gap-[3px] h-3 pb-0.5">
+                            {[1, 2, 3, 4].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    animate={{
+                                        height: `${25 + (i * 18.75)}%`,
+                                        backgroundColor: (signal >= i && systemNet > 0) ? "#00FF41" : "rgba(255, 255, 255, 0.08)",
+                                        boxShadow: (signal >= i && systemNet > 0) ? "0 0 10px rgba(0, 255, 65, 0.5)" : "none"
+                                    }}
+                                    className="w-[2.5px] rounded-[0.5px] transition-colors"
+                                />
+                            ))}
+                        </div>
+                    </div>
 
-/* ─────────────────────────────────────
+                    {/* BOTTOM STATUS */}
+                    <div className="absolute bottom-4 left-6 right-6 flex justify-end items-end z-20 transition-opacity duration-300 group-hover:opacity-0">
+                        <div className="flex items-center gap-1.5 px-2 py-1 bg-white/[0.03] border border-white/10 rounded-[2px]">
+                            <Cctv size={10} className="text-white/40" />
+                            <span className="text-[8px] font-mono font-bold text-white/60 uppercase tracking-widest">Live Link</span>
+                        </div>
+                    </div>
+
+                    {alert && <div className="absolute inset-0 border-2 border-red-500/20 bg-red-500/5 animate-pulse z-10 pointer-events-none" />}
+                </>
+            )}
+
+            {/* Tactical Corner Brackets */}
+            <div className={`absolute top-3 left-3 w-4 h-4 border-t border-l ${isActuallyOffline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute top-3 right-3 w-4 h-4 border-t border-r ${isActuallyOffline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute bottom-3 left-3 w-4 h-4 border-b border-l ${isActuallyOffline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+            <div className={`absolute bottom-3 right-3 w-4 h-4 border-b border-r ${isActuallyOffline ? 'border-white/10' : 'border-white/20'} z-20 transition-colors group-hover:border-white/50`} />
+        </div>
+    );
+};
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    DASHBOARD
-   ───────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const Dashboard = ({ onLogout }) => {
     const [time, setTime] = useState('')
     const [sidebarHover, setSidebarHover] = useState(false)
@@ -121,6 +148,7 @@ const Dashboard = ({ onLogout }) => {
     const [currentCamera, setCurrentCamera] = useState('All cameras')
     const [isCameraOpen, setIsCameraOpen] = useState(false)
     const [isCameraDetailOpen, setIsCameraDetailOpen] = useState(false) // New Detail Modal State
+    const [isReloading, setIsReloading] = useState(false) // System Resync State
     const [activeGridCamera, setActiveGridCamera] = useState('Living Room')
     const [activeTab, setActiveTab] = useState("Security Cameras")
     const [isSetupOpen, setIsSetupOpen] = useState(false)
@@ -140,33 +168,77 @@ const Dashboard = ({ onLogout }) => {
     const [isDeviceTypeOpen, setIsDeviceTypeOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('') // Global Search State
     const [activeEditField, setActiveEditField] = useState(null)
+    const [isRecording, setIsRecording] = useState(false)
+    const [isFullscreen, setIsFullscreen] = useState(false)
+    const [playbackProgress, setPlaybackProgress] = useState(40) // Default 40% playback position
+    const [cameraRegistry, setCameraRegistry] = useState({
+        'Living Room': { label: 'LIVING_ROOM', offline: true },
+        'Front Door': { label: 'FRONT_DOOR', alert: true },
+        'Backyard': { label: 'BACKYARD', offline: false },
+        'Garage': { label: 'GARAGE', offline: true }
+    })
+    const nameInputRef = useRef(null)
+    const emailInputRef = useRef(null)
+    const securityKeyInputRef = useRef(null)
+    const phoneInputRef = useRef(null)
+
+    useEffect(() => {
+        if (!activeEditField) return;
+        const timer = setTimeout(() => {
+            if (activeEditField === 'name') nameInputRef.current?.focus()
+            if (activeEditField === 'email') emailInputRef.current?.focus()
+            if (activeEditField === 'securityKey') securityKeyInputRef.current?.focus()
+            if (activeEditField === 'phone') phoneInputRef.current?.focus()
+        }, 50)
+        return () => clearTimeout(timer)
+    }, [activeEditField])
+
     const [activeChat, setActiveChat] = useState('System Admin')
     const [isPrimusConnectOpen, setIsPrimusConnectOpen] = useState(false)
     const [primusConnectStep, setPrimusConnectStep] = useState(1)
     const [primusForm, setPrimusForm] = useState({ site: '', label: '', location: '', description: '' })
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+    const [systemStats, setSystemStats] = useState({ battery: 100, net: 0, uptime: 0 })
 
     const [securityLogs, setSecurityLogs] = useState([
-        { id: 1, time: '09:24 AM', title: 'Motion Detected', location: 'Front Door', type: 'alert' },
-        { id: 2, time: '09:12 AM', title: 'Person Detected', location: 'Backyard', type: 'alert' },
-        { id: 3, time: '08:45 AM', title: 'System Armed', location: 'Home', type: 'system' },
-        { id: 4, time: '07:30 AM', title: 'Door Unlocked', location: 'Garage', type: 'info' },
-        { id: 5, time: '07:28 AM', title: 'Person Detected', location: 'Garage', type: 'alert' },
-        { id: 6, time: '06:00 AM', title: 'Routine Check', location: 'System', type: 'system' },
-        { id: 7, time: '01:15 AM', title: 'Motion Detected', location: 'Living Room', type: 'alert' },
+        { id: 1, time: '04:19:39', title: 'Unknown face detected', type: 'alert' },
+        { id: 2, time: '04:15:33', title: 'Signal restored', type: 'system' },
+        { id: 3, time: '04:10:22', title: 'Motion detected', type: 'alert' },
+        { id: 4, time: '04:05:15', title: 'Door locked', type: 'system' },
+        { id: 5, time: '04:00:10', title: 'Scan approved', type: 'system' },
+        { id: 6, time: '03:55:08', title: 'Signal lost', type: 'alert' },
+        { id: 7, time: '03:50:55', title: 'Link success', type: 'system' },
     ])
+
+    const [logoutHover, setLogoutHover] = useState(false);
+    const [netHover, setNetHover] = useState(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+        setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    // CTRL Shortcut Handler
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // CTRL+L to sign out automatically
+            if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+                e.preventDefault();
+                onLogout();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onLogout]);
 
     const [chatHistory, setChatHistory] = useState({
         'System Admin': [
-            { id: 1, sender: "System Admin", role: "admin", text: "A new security camera has been integrated into the system.", time: "10:23 AM" }
+            { id: 1, sender: "System Admin", role: "admin", text: "A new security camera has been integrated into the system.", time: "10:23 AM" },
+            { id: 2, sender: "ZENTHOS", role: "user", text: "Great, will check it out.", time: "07:33 AM" }
         ],
         'Security Bot': [
             { id: 1, sender: "Security Bot", role: "security", text: "Motion detected in Sector 7. Perimeter analysis initiating.", time: "10:15 AM" },
             { id: 2, sender: "Security Bot", role: "security", text: "Facial recognition scan pending authorization. Target ID: UNKNOWN.", time: "10:18 AM" }
-        ],
-        'Network Ops': [
-            { id: 1, sender: "Network Ops", role: "network", text: "Global bandwidth stable at 14TB/s. Neural link latency < 2ms.", time: "09:45 AM" },
-            { id: 2, sender: "Network Ops", role: "network", text: "Encryption keys rotated successfully. Secure tunnel established.", time: "10:00 AM" }
         ]
     })
 
@@ -191,12 +263,85 @@ const Dashboard = ({ onLogout }) => {
         }
     }, [])
 
+    // System Stats Listener
+    useEffect(() => {
+        if (window.api && window.api.onSystemStats) {
+            window.api.onSystemStats((stats) => {
+                setSystemStats(stats)
+            })
+        }
+    }, [])
+
     const handleSoftReload = () => {
-        setRefreshKey(prev => prev + 1)
+        setIsReloading(true)
+        // Set to exactly 3 seconds for perfect tactical pacing
+        setTimeout(() => {
+            setRefreshKey(prev => prev + 1)
+            setIsReloading(false)
+        }, 3000)
+    }
+
+    const toggleFullscreen = () => {
+        const element = document.getElementById('camera-full-view');
+        if (!document.fullscreenElement) {
+            element?.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    }
+
+    // Fullscreen change listener
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const getPlaybackTime = (progress) => {
+        const totalSeconds = (progress / 100) * 24 * 3600;
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    }
+
+    const handleSliderInteraction = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const update = (clientX) => {
+            const x = clientX - rect.left;
+            const newProgress = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            setPlaybackProgress(newProgress);
+        };
+
+        update(e.clientX);
+
+        const onMouseMove = (moveEvent) => update(moveEvent.clientX);
+        const onMouseUp = () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+    }
+
+    const toggleCameraConnection = (cameraName) => {
+        setCameraRegistry(prev => ({
+            ...prev,
+            [cameraName]: {
+                ...prev[cameraName],
+                offline: !prev[cameraName].offline
+            }
+        }))
     }
 
     const handleSendMessage = () => {
-        if (!inputMessage.trim()) return
+        if (!inputMessage.trim() || activeChat === 'Security Bot') return
 
         const newMessage = {
             id: Date.now(),
@@ -242,18 +387,18 @@ const Dashboard = ({ onLogout }) => {
     // LIVE LOG GENERATOR - HYPER SPEED
     useEffect(() => {
         const logPool = [
-            { title: 'Packet Analyzed', location: 'Firewall Node A', type: 'info' },
-            { title: 'Motion Trace', location: 'Sector 4', type: 'alert' },
-            { title: 'Encrypted Handshake', location: 'Core Server', type: 'system' },
-            { title: 'Door Status: Locked', location: 'Garage', type: 'info' },
-            { title: 'Database Sync', location: 'Cloud Shard 1', type: 'system' },
-            { title: 'Ping: 12ms', location: 'Network Backbone', type: 'info' },
-            { title: 'Signal Lost', location: 'Cam-02 (Kitchen)', type: 'alert' },
-            { title: 'Signal Restored', location: 'Cam-02 (Kitchen)', type: 'system' },
-            { title: 'Auth Verified', location: 'Admin Console', type: 'system' },
-            { title: 'Biometric Scan', location: 'Front Gate', type: 'alert' },
-            { title: 'Thermal Read', location: 'Server Room', type: 'info' },
-            { title: 'Key Rotation', location: 'Security Module', type: 'system' },
+            { title: 'Unknown face detected', type: 'alert' },
+            { title: 'Signal lost', type: 'alert' },
+            { title: 'Signal restored', type: 'system' },
+            { title: 'Motion detected', type: 'alert' },
+            { title: 'Door locked', type: 'system' },
+            { title: 'Scan approved', type: 'system' },
+            { title: 'Link success', type: 'system' },
+            { title: 'Sync complete', type: 'system' },
+            { title: 'Access denied', type: 'alert' },
+            { title: 'Key updated', type: 'system' },
+            { title: 'Scan active', type: 'system' },
+            { title: 'System ready', type: 'system' },
         ]
 
         let timeoutId
@@ -268,8 +413,8 @@ const Dashboard = ({ onLogout }) => {
 
             setSecurityLogs(prev => [newLog, ...prev.slice(0, 8)]) // Keep 9 items max for density
 
-            // Randomize speed for "burst" effect (fast: 150ms, slow: 800ms)
-            const nextDelay = Math.random() > 0.7 ? Math.floor(Math.random() * 200) + 150 : Math.floor(Math.random() * 600) + 400
+            // Deep slowdown for high-end feel (10s to 30s range)
+            const nextDelay = Math.floor(Math.random() * 20000) + 10000
             timeoutId = setTimeout(addLog, nextDelay)
         }
 
@@ -330,15 +475,15 @@ const Dashboard = ({ onLogout }) => {
                 onHoverEnd={() => setSidebarHover(false)}
                 initial={{ width: 72 }}
                 animate={{ width: sidebarHover ? 260 : 72 }}
-                transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                transition={{ type: "spring", stiffness: 120, damping: 24 }}
                 className="h-full bg-[#050505] flex flex-col pt-8 pb-6 shrink-0 z-40 relative shadow-[2px_0_20px_rgba(0,0,0,0.5)] rounded-r-2xl"
             >
                 {/* Custom Split-Level Border with Curve */}
                 <div className="absolute top-20 right-0 bottom-0 left-0 border-r border-t border-white/[0.06] rounded-tr-[40px] pointer-events-none" />
                 {/* Logo Area */}
                 <div className={`pl-[24px] ${sidebarHover ? 'mb-28' : 'mb-28'} flex items-center gap-4 whitespace-nowrap min-w-[max-content] transition-all duration-300 z-50`}>
-                    <img src={teletraanLogo} className="h-9 w-auto object-contain shrink-0" alt="Teletraan" />
-                    <span className="text-[22px] font-bold tracking-[0.1em] uppercase text-[#F2F2F7] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                    <img src={teletraanLogo} className="h-11 w-auto object-contain shrink-0 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" alt="Teletraan" />
+                    <span className="text-[24px] font-bold tracking-[0.1em] uppercase text-[#F2F2F7] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                         Teletraan
                     </span>
                 </div>
@@ -379,7 +524,10 @@ const Dashboard = ({ onLogout }) => {
                                                 </>
                                             )}
 
-                                            <item.icon size={24} strokeWidth={1.5} className={`shrink-0 z-10 transition-transform duration-300 group-hover/item:scale-110 ${item.label === 'Primus' ? '!text-[#00FF41] drop-shadow-[0_0_15px_rgba(0,255,65,0.8)]' : (isActive ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'group-hover/item:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]')}`} />
+                                            <item.icon size={24} strokeWidth={1.5} className={`shrink-0 z-10 transition-transform duration-300 group-hover/item:scale-110 
+                                                ${item.label === 'Primus'
+                                                    ? (systemStats.net > 0 ? '!text-[#00FF41] drop-shadow-[0_0_15px_rgba(0,255,65,0.8)]' : '!text-[#FF3B30] drop-shadow-[0_0_15px_rgba(255,59,48,0.8)]')
+                                                    : (isActive ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'group-hover/item:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]')}`} />
 
                                             <motion.span
                                                 animate={{ opacity: sidebarHover ? 1 : 0, x: sidebarHover ? 0 : -10 }}
@@ -393,68 +541,122 @@ const Dashboard = ({ onLogout }) => {
                             })}
                         </div>
                     ))}
-                </div>
 
-                {/* Bottom Status */}
-                <div className="mt-auto mb-6 px-3 whitespace-nowrap overflow-hidden">
-                    <div className={`
-                        relative flex items-center ${sidebarHover ? 'px-4' : 'justify-center px-0'} py-3 
-                        bg-[#00FF41]/[0.02] border-2 ${sidebarHover ? 'border-[#00FF41]/40 shadow-[0_0_20px_rgba(0,255,65,0.05)]' : 'border-white/10 bg-transparent'}
-                        rounded-[6px] transition-all duration-500 group overflow-hidden cursor-default backdrop-blur-[2px]
-                    `}>
-                        {/* Status Icon Area */}
-                        <div className="relative flex items-center justify-center w-6 h-6 shrink-0">
-                            {/* Rotating Ring (Sophisticated) */}
-                            <div className={`absolute inset-0 rounded-full border-2 border-current opacity-30 ${sidebarHover ? 'text-[#00FF41] border-t-transparent border-l-transparent animate-[spin_3s_linear_infinite]' : 'text-white/20 border-white/10'}`} />
+                    {/* Primus Status - Now part of main nav flow */}
+                    <div className="flex flex-col gap-1 px-3">
+                        <div
+                            className={`
+                                relative flex items-center gap-4 px-3 py-2 rounded-[2px] transition-all duration-300 whitespace-nowrap overflow-hidden
+                                ${sidebarHover && systemStats.net > 0
+                                    ? 'bg-gradient-to-r from-[#00FF41]/[0.1] to-transparent border border-[#00FF41]/20 shadow-[inset_0_0_15px_rgba(0,255,65,0.05)]'
+                                    : 'bg-white/[0.03] border border-transparent'}
+                            `}
+                        >
+                            {/* Status Icon Area - ORBITAL DESIGN */}
+                            <div className="relative flex items-center justify-center w-6 h-6 shrink-0 z-10">
+                                {/* Orbital Ring 1 */}
+                                <div className={`absolute inset-0 rounded-full border-[1.5px] ${sidebarHover
+                                    ? (systemStats.net > 0 ? 'border-[#00FF41]/30 border-t-[#00FF41] animate-[spin_3s_linear_infinite]' : 'border-white/10 border-t-white/40 animate-[spin_6s_linear_infinite]')
+                                    : 'border-white/10'}`} />
 
-                            {/* Inner Dot */}
-                            <div className={`w-1.5 h-1.5 rounded-full ${sidebarHover ? 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]' : 'bg-white/20'}`} />
+                                {/* Core Core */}
+                                <div className={`w-1.5 h-1.5 rounded-full z-10 ${sidebarHover
+                                    ? (systemStats.net > 0 ? 'bg-[#00FF41] shadow-[0_0_10px_#00FF41]' : 'bg-white/40')
+                                    : 'bg-white/20'}`} />
 
-                            {/* Wave (Active only) */}
-                            {sidebarHover && (
-                                <div className="absolute inset-0 rounded-full border border-[#00FF41] opacity-0 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                {/* Signal Wave */}
+                                {sidebarHover && systemStats.net > 0 && (
+                                    <div className="absolute inset-[-2px] rounded-full border border-[#00FF41] opacity-0 animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                )}
+                            </div>
+
+                            {/* Text Content */}
+                            <motion.div
+                                animate={{ opacity: sidebarHover ? 1 : 0, x: sidebarHover ? 0 : -10 }}
+                                className="flex flex-col items-start overflow-hidden z-10"
+                            >
+                                <span className={`text-[12px] font-black font-mono tracking-[0.1em] uppercase whitespace-nowrap leading-none mb-1 transition-colors ${systemStats.net > 0 ? 'text-[#00FF41]' : 'text-white/40'}`}>
+                                    PRIMUS
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-[9px] font-bold font-mono tracking-widest uppercase whitespace-nowrap leading-none ${systemStats.net > 0 ? 'text-white/60' : 'text-white/30'}`}>
+                                        {systemStats.net > 0 ? 'CONNECTED' : 'OFFLINE'}
+                                    </span>
+                                </div>
+                            </motion.div>
+
+                            {/* Side Active Mark */}
+                            {sidebarHover && systemStats.net > 0 && (
+                                <div className="absolute left-0 top-1/4 bottom-1/4 w-[2px] bg-[#00FF41] shadow-[0_0_10px_#00FF41]" />
                             )}
                         </div>
-
-                        {/* Text Content (Animate Width) */}
-                        <motion.div
-                            animate={{ opacity: sidebarHover ? 1 : 0, width: sidebarHover ? 'auto' : 0 }}
-                            className="flex flex-col items-start ml-3 overflow-hidden"
-                        >
-                            <span className="text-[12px] font-black font-mono text-[#00FF41] tracking-[0.1em] uppercase whitespace-nowrap leading-none mb-1">
-                                PRIMUS
-                            </span>
-                            <span className="text-[8px] font-medium font-sans text-[#00FF41]/50 tracking-wider uppercase whitespace-nowrap leading-none">
-                                CONNECTED
-                            </span>
-                        </motion.div>
-
-                        {/* Signal Bars (Far Right) */}
-                        <motion.div
-                            animate={{ opacity: sidebarHover ? 1 : 0, width: sidebarHover ? 'auto' : 0 }}
-                            className="flex gap-[2px] items-end h-3 ml-auto pl-4"
-                        >
-                            <div className="w-[2px] h-[4px] bg-[#00FF41]/20" />
-                            <div className="w-[2px] h-[8px] bg-[#00FF41]/50" />
-                            <div className="w-[2px] h-[12px] bg-[#00FF41]" />
-                        </motion.div>
                     </div>
                 </div>
 
-                {/* Logout */}
-                <div className="px-4 mt-2 mb-2 whitespace-nowrap overflow-hidden">
+                {/* SYSTEM POWER CONTROLLER */}
+                <div className="px-4 mt-4 mb-2 whitespace-nowrap overflow-hidden">
                     <div
                         onClick={() => setIsLogoutModalOpen(true)}
-                        className="flex items-center gap-3 px-3 py-2 text-[#666] hover:text-[#F2F2F7] cursor-pointer transition-colors rounded-[4px] hover:bg-white/[0.03]"
+                        onMouseEnter={() => setLogoutHover(true)}
+                        onMouseLeave={() => setLogoutHover(false)}
+                        onMouseMove={handleMouseMove}
+                        className="group relative flex items-center h-11 bg-red-500/[0.03] border border-red-500/10 hover:border-red-500/40 rounded-[2px] cursor-pointer transition-all duration-500 overflow-hidden"
                     >
-                        <LogOut size={18} strokeWidth={1.5} className="shrink-0" />
-                        <motion.span
-                            animate={{ opacity: sidebarHover ? 1 : 0 }}
-                            className="text-[14px]"
+                        {/* Internal Glow Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                        {/* Tactical Corner (Active State) */}
+                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-red-500/20 group-hover:border-red-500/60 transition-colors" />
+
+                        {/* Power Icon Container */}
+                        <div className="relative flex items-center justify-center w-12 h-full shrink-0">
+                            <div className="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/20 transition-colors duration-500" />
+                            <Power
+                                size={20}
+                                strokeWidth={2.5}
+                                className="text-red-500/60 group-hover:text-red-500 transition-all duration-500 group-hover:scale-110 drop-shadow-[0_0_10px_#ef444466]"
+                            />
+                            {/* Pulse Core */}
+                            <div className="absolute w-1 h-1 bg-red-500 rounded-full animate-pulse blur-[1px] opacity-40 group-hover:opacity-100" />
+                        </div>
+
+                        {/* Label */}
+                        <motion.div
+                            animate={{ opacity: sidebarHover ? 1 : 0, x: sidebarHover ? 0 : -10 }}
+                            className="flex flex-col ml-3 pointer-events-none"
                         >
-                            Log Out
-                        </motion.span>
+                            <span className="text-[14px] font-black text-white/40 group-hover:text-white tracking-[0.2em] uppercase transition-colors">
+                                Power
+                            </span>
+                        </motion.div>
+
+                        {/* Hover Overlay Scanline */}
+                        <motion.div
+                            animate={{ x: ['100%', '-200%'] }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent pointer-events-none"
+                        />
                     </div>
+
+                    <AnimatePresence>
+                        {logoutHover && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                style={{
+                                    position: 'fixed',
+                                    left: mousePos.x + 12,
+                                    top: mousePos.y + 12,
+                                    zIndex: 9999,
+                                    pointerEvents: 'none'
+                                }}
+                                className="px-3 py-0.5 bg-[#050505] border border-white/10 rounded-[2px] backdrop-blur-md"
+                            >
+                                <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#F2F2F7]/60">Ctrl + L</span>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </motion.nav>
 
@@ -467,9 +669,16 @@ const Dashboard = ({ onLogout }) => {
                     <div className="absolute inset-0 px-6 grid grid-cols-[1fr_260px] gap-6 pointer-events-none">
                         <div className="flex items-center justify-center">
                             <div className="flex items-center gap-4 select-none">
-                                {ActiveIcon && <ActiveIcon size={28} className="text-[#F2F2F7] drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />}
-                                <span className="text-[24px] font-bold tracking-[0.15em] uppercase text-[#F2F2F7] drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                                    {activeTab}
+                                {ActiveIcon && (
+                                    <ActiveIcon
+                                        size={28}
+                                        className={`${(activeTab === 'Primus' || systemStats.net === 0)
+                                            ? (systemStats.net > 0 ? 'text-[#00FF41] drop-shadow-[0_0_12px_rgba(0,255,65,0.4)]' : 'text-[#FF3B30] drop-shadow-[0_0_12px_rgba(255,59,48,0.4)]')
+                                            : 'text-[#F2F2F7] drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]'} transition-all duration-300`}
+                                    />
+                                )}
+                                <span className={`text-[24px] font-bold tracking-[0.15em] uppercase transition-colors duration-500 ${systemStats.net === 0 ? 'text-[#FF3B30] drop-shadow-[0_0_15px_rgba(255,59,48,0.3)]' : 'text-[#F2F2F7] drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'}`}>
+                                    {systemStats.net > 0 ? activeTab : 'OFFLINE'}
                                 </span>
                             </div>
                         </div>
@@ -479,15 +688,7 @@ const Dashboard = ({ onLogout }) => {
                     <div className="absolute right-6 top-0 bottom-0 flex items-center gap-6 no-drag">
                         {/* Search Bar */}
 
-                        {/* Clock & Status */}
-                        <div className="flex flex-col items-end leading-none gap-0.5">
-                            <span style={{ fontFamily: font.mono, fontSize: '20px', fontWeight: 600, color: '#F2F2F7', letterSpacing: '0.1em' }}>
-                                {time.split(' ')[1]}
-                            </span>
-                            <span style={{ fontFamily: font.mono, fontSize: '12px', color: '#666', letterSpacing: '0.15em' }}>
-                                {time.split(' ')[0]}
-                            </span>
-                        </div>
+                        {/* Clock removed from here */}
 
                         {/* Divider */}
                         <div className="h-8 w-[1px] bg-white/[0.1]" />
@@ -531,7 +732,80 @@ const Dashboard = ({ onLogout }) => {
                         {/* Divider */}
                         <div className="h-8 w-[1px] bg-white/[0.1]" />
 
+                        {/* SYSTEM TELEMETRY - TACTICAL ARRAY V2 */}
+                        <div className="flex items-center gap-2 px-1.5 h-10 bg-white/[0.03] border border-white/[0.08] rounded-[4px] backdrop-blur-xl shadow-2xl mr-2">
+                            <div
+                                onClick={() => window.api?.toggleNetwork?.()}
+                                onMouseEnter={() => setNetHover(true)}
+                                onMouseLeave={() => setNetHover(false)}
+                                onMouseMove={handleMouseMove}
+                                className="flex items-center justify-center w-9 h-8 rounded-[2px] hover:bg-white/[0.05] transition-all duration-300 group/net cursor-pointer"
+                            >
+                                <div className="relative">
+                                    <Wifi
+                                        size={16}
+                                        className={`${systemStats.net > 0 ? 'text-[#00FF41]' : 'text-[#FF3B30] animate-pulse'} transition-colors duration-500`}
+                                        strokeWidth={2.5}
+                                    />
+                                    {systemStats.net > 0 && (
+                                        <div className="absolute inset-0 bg-[#00FF41] opacity-20 blur-md rounded-full animate-pulse group-hover/net:opacity-40" />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Inner Vertical Divider */}
+                            <div className="w-[1px] h-4 bg-white/10" />
+
+                            {/* Power Node (Battery) */}
+                            <div
+                                className="flex items-center gap-2 px-3 h-8 rounded-[2px] hover:bg-white/[0.05] transition-all duration-300 group/pwr cursor-pointer"
+                            >
+                                <div className="relative flex items-center justify-center">
+                                    <BatteryMedium
+                                        size={18}
+                                        className={`${systemStats.battery > 20 ? 'text-white/60 group-hover/pwr:text-white' : 'text-[#FF3B30] animate-pulse'} transition-colors duration-300`}
+                                        strokeWidth={2}
+                                    />
+                                    <motion.div
+                                        initial={false}
+                                        animate={{ width: `${Math.max(2, (systemStats.battery / 100) * 11)}px` }}
+                                        transition={{ duration: 0.15, ease: "linear" }}
+                                        className="absolute left-[3px] top-[6px] h-[6px] bg-white rounded-[1px] opacity-80"
+                                    />
+                                </div>
+                                <span className="text-[12px] font-black text-white/40 group-hover/pwr:text-white/90 font-mono tracking-tighter tabular-nums transition-colors">
+                                    {Math.floor(systemStats.battery)}%
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-8 w-[1px] bg-white/[0.1]" />
+
                         <WindowControls onReload={handleSoftReload} />
+
+                        {/* Connection Label */}
+                        <AnimatePresence>
+                            {netHover && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    style={{
+                                        position: 'fixed',
+                                        left: mousePos.x + 12,
+                                        top: mousePos.y + 12,
+                                        zIndex: 9999,
+                                        pointerEvents: 'none'
+                                    }}
+                                    className="px-3 py-0.5 bg-[#050505] border border-white/10 rounded-[2px] backdrop-blur-md"
+                                >
+                                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#F2F2F7]/60">
+                                        {systemStats.net > 0 ? 'Disconnect' : 'Connect'}
+                                    </span>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </header>
 
@@ -645,7 +919,7 @@ const Dashboard = ({ onLogout }) => {
                         >
                             <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
                             <div className="relative z-10 flex items-center gap-2">
-                                <Plus size={14} strokeWidth={3} className="text-black group-hover:text-white transition-colors duration-300" />
+                                <Plus size={14} strokeWidth={4} className="text-black group-hover:text-white transition-colors duration-300" />
                                 <span className="text-[12px] font-mono font-bold tracking-wider uppercase text-black group-hover:text-white transition-colors duration-300">
                                     Add camera
                                 </span>
@@ -662,143 +936,142 @@ const Dashboard = ({ onLogout }) => {
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className={`flex-1 p-6 overflow-hidden ${activeTab === 'Primus' ? 'flex flex-col items-center justify-center' : 'grid grid-cols-[1fr_260px] gap-6'}`}
+                    className={`flex-1 p-6 overflow-hidden ${activeTab === 'Security Cameras' ? 'grid grid-cols-[1fr_260px] gap-6' : 'flex flex-col items-center justify-center'}`}
                 >
 
-                    {activeTab !== 'Primus' && (
+                    {/* MAIN SURVEILLANCE GRID */}
+                    {activeTab === 'Security Cameras' && (
                         <>
                             {/* VISUAL MATRIX (Magnetic Assembly) - BOLDER DESIGN */}
-                            <div className="bg-black rounded-[6px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] relative h-[calc(100%-80px)]">
+                            <div className="bg-black rounded-[4px] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] relative h-[calc(100%-80px)]">
                                 {/* Top Highlight */}
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/10 z-20 pointer-events-none" />
 
-                                {currentCamera !== 'All cameras' ? (
-                                    // Single Camera View
-                                    <motion.div
-                                        key={currentCamera}
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.4 }}
-                                        className="w-full h-full"
-                                    >
-                                        <FeedCell
-                                            label={currentCamera}
-                                            active
-                                            alert={false}
+                                {(currentCamera !== 'All cameras' || currentLocation !== 'All locations') ? (
+                                    // Single Camera / Location View - Unified Tactical Design
+                                    <div className="relative w-full h-full bg-[#020202] p-2">
+                                        {/* Background Tech Pattern */}
+                                        <div className="absolute inset-0 opacity-[0.08]"
+                                            style={{ backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
                                         />
-                                    </motion.div>
+
+                                        <motion.div
+                                            key={currentCamera !== 'All cameras' ? currentCamera : currentLocation}
+                                            initial={{ opacity: 0, scale: 0.98 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.6 }}
+                                            className="w-full h-full relative group"
+                                        >
+                                            <FeedCell
+                                                label={cameraRegistry[currentCamera !== 'All cameras' ? currentCamera : currentLocation]?.label || (currentCamera !== 'All cameras' ? currentCamera : currentLocation)}
+                                                offline={cameraRegistry[currentCamera !== 'All cameras' ? currentCamera : currentLocation]?.offline}
+                                                alert={cameraRegistry[currentCamera !== 'All cameras' ? currentCamera : currentLocation]?.alert}
+                                                systemNet={systemStats.net}
+                                            />
+                                        </motion.div>
+                                    </div>
                                 ) : (
-                                    <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-[1px]">
-                                        {/* Top Left - Living Room */}
-                                        <motion.div
-                                            initial={{ x: -40, y: -40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Living Room'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Living Room'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
+                                    <div className="relative w-full h-full bg-[#020202] p-2">
+                                        {/* Background Tech Pattern */}
+                                        <div className="absolute inset-0 opacity-[0.08]"
+                                            style={{ backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+                                        />
 
+                                        <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-2 relative z-10">
+                                            {/* Top Left - Living Room */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.1 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Living Room'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Living Room'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label={cameraRegistry['Living Room'].label} offline={cameraRegistry['Living Room'].offline} systemNet={systemStats.net} />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-[2px] relative overflow-hidden group/btn">
+                                                        <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '8px 8px' }} />
+                                                        <Maximize size={10} className="text-white/70" />
+                                                        <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase relative z-10">Expand Feed</span>
+                                                        <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/30" />
+                                                        <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/30" />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
 
-                                            <FeedCell label="" offline={true} />
+                                            {/* Top Right - Front Door */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.2 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Front Door'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Front Door'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label={cameraRegistry['Front Door'].label} alert={cameraRegistry['Front Door'].alert} systemNet={systemStats.net} />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-[2px] relative overflow-hidden group/btn">
+                                                        <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '8px 8px' }} />
+                                                        <Maximize size={10} className="text-white/70" />
+                                                        <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase relative z-10">Expand Feed</span>
+                                                        <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/30" />
+                                                        <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/30" />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
 
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Living Room</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
+                                            {/* Bottom Left - Backyard */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.3 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Backyard'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Backyard'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell label={cameraRegistry['Backyard'].label} systemNet={systemStats.net} />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-[2px] relative overflow-hidden group/btn">
+                                                        <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '8px 8px' }} />
+                                                        <Maximize size={10} className="text-white/70" />
+                                                        <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase relative z-10">Expand Feed</span>
+                                                        <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/30" />
+                                                        <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/30" />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
 
-                                                    {/* Tech Corners */}
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
+                                            {/* Bottom Right - Garage */}
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.98 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, delay: 0.4 }}
+                                                className="relative group cursor-pointer"
+                                                onClick={() => { setActiveGridCamera('Garage'); setIsCameraDetailOpen(true); }}
+                                                style={{ display: (!searchQuery || 'Garage'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
+                                            >
+                                                <FeedCell
+                                                    label={cameraRegistry['Garage'].label}
+                                                    offline={cameraRegistry['Garage'].offline}
+                                                    systemNet={systemStats.net}
+                                                />
+                                                <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-[2px] relative overflow-hidden group/btn">
+                                                        <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '8px 8px' }} />
+                                                        <Maximize size={10} className="text-white/70" />
+                                                        <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white/90 uppercase relative z-10">Expand Feed</span>
+                                                        <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/30" />
+                                                        <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/30" />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        </div>
 
-                                        {/* Top Right - Front Door */}
-                                        <motion.div
-                                            initial={{ x: 40, y: -40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Front Door'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Front Door'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-                                            <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-[#00FF41] text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
-                                            </div>
-
-                                            <FeedCell label="" active={false} alert />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Front Door</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-
-                                        {/* Bottom Left - Backyard */}
-                                        <motion.div
-                                            initial={{ x: -40, y: 40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.2 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Backyard'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Backyard'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-                                            <div className="absolute top-6 left-8 z-20 flex items-center gap-3">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41] animate-pulse" />
-                                                <span className="text-white text-[12px] font-bold tracking-widest shadow-black drop-shadow-md">Active</span>
-                                            </div>
-
-                                            <FeedCell label="" active={false} />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Backyard</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-
-                                        {/* Bottom Right - Garage */}
-                                        <motion.div
-                                            initial={{ x: 40, y: 40, opacity: 0 }}
-                                            animate={{ x: 0, y: 0, opacity: 1 }}
-                                            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1], delay: 0.25 }}
-                                            className="relative w-full h-full group cursor-pointer overflow-hidden"
-                                            onClick={() => { setActiveGridCamera('Garage'); setIsCameraDetailOpen(true); }}
-                                            style={{ display: (!searchQuery || 'Garage'.toLowerCase().includes(searchQuery.toLowerCase())) ? 'block' : 'none' }}
-                                        >
-
-
-                                            <FeedCell label="" offline={true} />
-
-                                            {/* Navigation Button Overlay */}
-                                            <div className="absolute bottom-5 right-10 z-20">
-                                                <button className="group/btn relative px-5 py-2.5 bg-black/80 backdrop-blur-md border border-white/10 text-[#F2F2F7] text-[11px] font-bold tracking-[0.2em] uppercase rounded-[2px] overflow-hidden flex items-center gap-3 transition-all duration-300 hover:border-white/30 hover:bg-black">
-                                                    <span className="group-hover/btn:text-white transition-colors">Garage</span>
-                                                    <div className="w-[1px] h-3 bg-white/10 group-hover/btn:bg-white/30 transition-colors" />
-                                                    <ArrowRight size={14} className="text-[#666] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all duration-300" />
-
-                                                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20" />
-                                                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20" />
-                                                </button>
-                                            </div>
-                                        </motion.div>
+                                        {/* Matrix Center focus crosshair */}
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 z-20 pointer-events-none flex items-center justify-center opacity-10">
+                                            <div className="w-[2px] h-full bg-white/40" />
+                                            <div className="absolute h-[2px] w-full bg-white/40" />
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -811,75 +1084,97 @@ const Dashboard = ({ onLogout }) => {
                                 className="flex flex-col gap-6 pt-0 h-[calc(100%-80px)] overflow-hidden relative"
                             >
 
-                                {/* Primus Status - BOLDER DESIGN */}
-                                {/* System Status - ULTRA REALISTIC REDESIGN */}
-                                {/* System Status - CLEAN CONSUMER DESIGN */}
-                                <div className="flex flex-col gap-4 p-6 rounded-[6px] border border-white/10 shadow-lg relative bg-[#09090b] overflow-hidden group">
-                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-                                    <div className="flex items-center gap-4 relative z-10">
-                                        <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#00FF41]/10 border border-[#00FF41]/20 shadow-[0_0_15px_rgba(0,255,65,0.15)]">
-                                            <CheckCircle2 size={20} className="text-[#00FF41]" />
-                                            <div className="absolute inset-0 rounded-full border border-[#00FF41] animate-ping opacity-20" />
-                                        </div>
+                                {/* CLOCK & DATE - TACTICAL SYNC */}
+                                <div className="flex flex-col gap-6 p-6 rounded-[4px] border border-white/[0.06] bg-[#050505] relative overflow-hidden shadow-2xl">
+                                    <div className="flex flex-col gap-2 relative z-10 py-1">
                                         <div className="flex flex-col">
-                                            <span className="text-[15px] font-bold text-white tracking-wide">System Online</span>
-                                            <span className="text-[13px] text-[#888] font-medium">Monitoring active</span>
+                                            <span className="text-[42px] font-bold text-white tracking-[-0.05em] font-mono leading-none">
+                                                {time.split(' ')[1]}
+                                            </span>
+                                            <div className="flex items-center gap-3 mt-3">
+                                                <div className="h-[1px] w-8 bg-white/20" />
+                                                <span className="text-[14px] font-bold text-white/40 tracking-[0.3em] uppercase font-mono">
+                                                    {time.split(' ')[0]}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-6 gap-1.5 mt-6">
+                                            {[...Array(6)].map((_, i) => (
+                                                <div key={i} className="h-1 bg-white/[0.05] rounded-full overflow-hidden">
+                                                    <motion.div
+                                                        animate={{ x: ["-100%", "100%"] }}
+                                                        transition={{ duration: 4, repeat: Infinity, delay: i * 0.4, ease: "linear" }}
+                                                        className="h-full w-full bg-white/20"
+                                                    />
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Security Logs - CLEAN LIST DESIGN */}
-                                <div className="flex-1 flex flex-col overflow-hidden rounded-[6px] border border-white/10 shadow-lg bg-[#09090b] relative">
+                                {/* EVENT STREAM - TACTICAL SURVEILLANCE DESIGN */}
+                                <div className="flex-1 flex flex-col overflow-hidden rounded-[4px] border border-white/10 shadow-2xl bg-[#030303] relative group">
+                                    {/* Scanline Overlay */}
+                                    <div className="absolute inset-0 pointer-events-none z-20 opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
 
                                     {/* Header */}
-                                    <div className="h-12 border-b border-white/10 flex items-center justify-between px-6 bg-white/[0.02] shrink-0">
-                                        <div className="flex items-center gap-2.5">
-                                            <Activity size={16} className="text-white opacity-80" />
-                                            <span className="text-[13px] font-bold text-white tracking-[0.1em] uppercase">Security Logs</span>
+                                    <div className="h-12 border-b border-white/10 flex items-center justify-between px-6 bg-white/[0.03] shrink-0 z-30">
+                                        <div className="flex items-center">
+                                            <span className="text-[13px] font-black text-white/90 tracking-[0.2em] font-mono uppercase">SYSTEM LOGS</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 opacity-40">
+                                            <div className="w-1 h-1 bg-white rounded-full" />
+                                            <div className="w-1 h-1 bg-white rounded-full" />
+                                            <div className="w-1 h-1 bg-white rounded-full" />
                                         </div>
                                     </div>
 
-                                    {/* Clean List */}
-                                    <div className="flex-1 overflow-hidden p-2 relative">
+                                    {/* Tactical Corner Brackets */}
+                                    <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/20 z-30" />
+                                    <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/20 z-30" />
+                                    <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/20 z-30" />
+                                    <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/20 z-30" />
+
+                                    {/* Event List */}
+                                    <div className="flex-1 overflow-hidden p-1.5 relative z-10">
+                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40 pointer-events-none z-20" />
                                         <AnimatePresence initial={false}>
                                             {securityLogs.map((item) => (
                                                 <motion.div
                                                     layout
-                                                    initial={{ opacity: 0, x: -20, backgroundColor: "rgba(255,255,255,0.1)" }}
-                                                    animate={{ opacity: 1, x: 0, backgroundColor: "rgba(255,255,255,0)" }}
-                                                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
-                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.1 } }}
+                                                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                                                     key={item.id}
-                                                    className="flex items-center justify-between px-4 py-3 rounded-[4px] hover:bg-white/[0.04] transition-colors cursor-default group border-b border-transparent hover:border-white/[0.02]"
+                                                    className="flex items-center justify-between px-4 py-2.5 rounded-[2px] mb-1 hover:bg-white/[0.04] transition-all cursor-crosshair group/item border-l-2 border-transparent hover:border-white/20"
                                                 >
-                                                    <div className="flex items-center gap-4">
-                                                        {/* Status Dot */}
-                                                        <div className={`w-2 h-2 rounded-full ${item.type === 'alert' ? 'bg-[#FF3B30] shadow-[0_0_8px_#FF3B30]' :
-                                                            item.type === 'system' ? 'bg-[#00FF41] shadow-[0_0_8px_#00FF41]' :
-                                                                'bg-[#0A84FF] shadow-[0_0_8px_#0A84FF]'
-                                                            }`} />
-
-                                                        <div className="flex flex-col gap-0.5">
-                                                            <span className={`text-[13px] font-medium leading-tight ${item.type === 'alert' ? 'text-white' : 'text-[#DDD]'}`}>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="flex flex-col gap-0">
+                                                            <span className="text-[13px] font-bold font-mono tracking-tight text-white/90">
                                                                 {item.title}
-                                                            </span>
-                                                            <span className="text-[11px] text-[#666] group-hover:text-[#999] transition-colors">
-                                                                {item.location}
                                                             </span>
                                                         </div>
                                                     </div>
 
-                                                    <span className="text-[11px] text-[#555] font-medium group-hover:text-[#888] transition-colors font-mono">
-                                                        {item.time}
-                                                    </span>
+                                                    <div className="flex flex-col items-end gap-1.5 min-w-[70px]">
+                                                        <span className="text-[12px] text-white/50 font-black font-mono tracking-tight tabular-nums group-hover/item:text-white/80 transition-colors">
+                                                            {item.time}
+                                                        </span>
+                                                        <div className="flex gap-[2px] opacity-20">
+                                                            <div className="w-[10px] h-[1.5px] bg-white" />
+                                                            <div className={`w-[10px] h-[1.5px] ${item.type === 'alert' ? 'bg-white' : 'bg-white/20'}`} />
+                                                        </div>
+                                                    </div>
                                                 </motion.div>
                                             ))}
                                         </AnimatePresence>
                                     </div>
 
-                                    {/* Bottom Fade */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#09090b] to-transparent pointer-events-none" />
+                                    {/* Bottom Fade Mask */}
+                                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black to-transparent pointer-events-none z-30" />
                                 </div>
                             </motion.div>
 
@@ -888,7 +1183,7 @@ const Dashboard = ({ onLogout }) => {
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.8, duration: 0.5 }}
-                                className="absolute bottom-6 left-6 right-6 h-14 bg-black border border-white/20 rounded-[6px] flex items-center justify-between px-6 z-30 shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+                                className="absolute bottom-6 left-6 right-6 h-14 bg-black border border-white/20 rounded-[4px] flex items-center justify-between px-6 z-30 shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
                             >
                                 {/* Top Highlight for defined edge */}
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/10" />
@@ -928,32 +1223,98 @@ const Dashboard = ({ onLogout }) => {
                         >
                             <img src={secCamSvg} className="w-[320px] mb-6 opacity-60 invert select-none pointer-events-none" alt="Camera Setup" />
                             <h2 className="text-[24px] text-[#F2F2F7] font-medium mb-3 tracking-wide">No Camera connected yet.</h2>
-                            <p className="text-[#888] text-[15px] mb-10 leading-relaxed font-light">Let's set up your first camera for live monitoring</p>
+                            <p className="text-[#888] text-[15px] mb-10 leading-relaxed font-light">
+                                {systemStats.net > 0
+                                    ? "Let's set up your first camera for live monitoring"
+                                    : "Hardware link lost. Please restore connectivity to provision new devices."}
+                            </p>
                             <button
                                 onClick={() => {
-                                    setIsPrimusConnectOpen(true)
-                                    setPrimusConnectStep(1)
+                                    if (systemStats.net > 0) {
+                                        setIsPrimusConnectOpen(true)
+                                        setPrimusConnectStep(1)
+                                    }
                                 }}
-                                className="relative group px-8 py-3 bg-transparent border border-white overflow-hidden rounded-[2px] flex items-center gap-4 cursor-pointer"
+                                disabled={systemStats.net === 0}
+                                className={`relative group px-8 py-3 bg-transparent border overflow-hidden rounded-[2px] flex items-center gap-4 transition-all duration-500 
+                                    ${systemStats.net > 0
+                                        ? 'border-white cursor-pointer'
+                                        : 'border-white/10 cursor-not-allowed'}`}
                             >
-                                {/* Solid White Sliding Background - Default Visible, Slides Right on Hover */}
-                                <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                {/* Solid White Sliding Background - Only active if online */}
+                                {systemStats.net > 0 && (
+                                    <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
+                                )}
 
-                                {/* Content Layer - Text Colors Flip */}
+                                {/* Content Layer */}
                                 <div className="relative z-10 flex items-center gap-3">
-                                    <span className="text-[14px] font-mono font-bold tracking-[0.2em] uppercase text-black group-hover:text-white transition-colors duration-300">
-                                        Connect
+                                    <span className={`text-[14px] font-mono font-bold tracking-[0.2em] uppercase transition-colors duration-300 
+                                        ${systemStats.net > 0 ? 'text-black group-hover:text-white' : 'text-white/20'}`}>
+                                        {systemStats.net > 0 ? 'Connect' : 'System Offline'}
                                     </span>
-                                    <ArrowRight size={18} className="text-black group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                                    <ArrowRight size={18} className={`transition-all duration-300 
+                                        ${systemStats.net > 0 ? 'text-black group-hover:text-white group-hover:translate-x-1' : 'text-white/10'}`} />
                                 </div>
 
-                                {/* Tactical Corners (Hidden by default or white bg blocks them, visible when transparent) */}
-                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
-                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                {/* Tactical Corners */}
+                                {systemStats.net > 0 && (
+                                    <>
+                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
+                                    </>
+                                )}
                             </button>
                         </motion.div>
                     )}
 
+                    {/* COMING SOON VIEW - TACTICAL INDUSTRIAL DESIGN */}
+                    {!['Security Cameras', 'Primus'].includes(activeTab) && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col items-center text-center max-w-2xl relative"
+                        >
+                            {/* Background Atmosphere */}
+                            <div className="absolute inset-0 -z-10 flex items-center justify-center opacity-[0.03]">
+                                <img src={teletraanLogo} className="w-[500px] grayscale invert animate-pulse duration-[5s]" alt="" />
+                            </div>
+
+                            {/* Scanline / HUD Effect */}
+                            <div className="w-16 h-1 bg-white/20 rounded-full mb-8 relative overflow-hidden">
+                                <motion.div
+                                    animate={{ x: [-64, 64] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                    className="absolute inset-0 bg-white/80 blur-[2px]"
+                                />
+                            </div>
+
+                            <div className="relative mb-10">
+                                <motion.div
+                                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="absolute -inset-10 bg-white/5 blur-[60px] rounded-full"
+                                />
+                                <div className="relative px-8 py-3 border border-white/20 bg-black/40 backdrop-blur-md rounded-[2px] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                                    <span className="text-[11px] font-mono font-bold tracking-[0.4em] uppercase text-white/40 mb-2 block">Restricted Access</span>
+                                    <h1 className="text-[42px] font-black text-white tracking-[0.3em] uppercase mb-1 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                                        Coming Soon
+                                    </h1>
+                                    <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                                </div>
+
+                                {/* Industrial Corners */}
+                                <div className="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-white/20" />
+                                <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-white/20" />
+                            </div>
+
+                            <div className="flex flex-col items-center gap-6">
+                                <p className="text-[#888] text-[18px] leading-relaxed max-w-xl font-mono font-bold tracking-[0.15em]">
+                                    This interface is currently undergoing development.
+                                </p>
+                            </div>
+
+                        </motion.div>
+                    )}
                 </motion.div>
 
                 {/* PRIMUS CONNECT MODAL - CLEAN GRID DESIGN */}
@@ -1178,7 +1539,7 @@ const Dashboard = ({ onLogout }) => {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                                 onClick={() => setActiveEditField(null)}
-                                className="w-full max-w-4xl bg-[#050505]/70 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_100px_rgba(0,0,0,0.9)] rounded-2xl overflow-hidden relative z-10 flex flex-col max-h-[90vh]"
+                                className="w-full max-w-4xl bg-[#050505]/80 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_100px_rgba(0,0,0,0.9)] rounded-2xl overflow-hidden relative z-10 flex flex-col max-h-[90vh]"
                             >
                                 {/* Titanium Gradient Light Effect */}
                                 <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-[#00FF41] to-transparent opacity-70 shadow-[0_0_15px_#00FF41]" />
@@ -1253,13 +1614,17 @@ const Dashboard = ({ onLogout }) => {
                                                     type="text"
                                                     value={userProfile.name}
                                                     readOnly={activeEditField !== 'name'}
+                                                    ref={nameInputRef}
                                                     onChange={e => setUserProfile({ ...userProfile, name: e.target.value })}
-                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[8px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
+                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[2px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
                                                         ${activeEditField === 'name'
-                                                            ? 'border-[#F2F2F7] text-[#F2F2F7] bg-white/[0.06] shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                                                            : 'border-white/[0.08] text-[#888]'}
+                                                            ? 'border-[#F2F2F7] text-white bg-white/[0.08] shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-[1.01]'
+                                                            : 'border-white/[0.08] text-[#888] hover:border-white/20'}
                                                     `}
                                                 />
+                                                {/* Corners */}
+                                                <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 group-hover:border-white/40" />
+                                                <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20 group-hover:border-white/40" />
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation()
@@ -1282,13 +1647,17 @@ const Dashboard = ({ onLogout }) => {
                                                     type="email"
                                                     value={userProfile.email}
                                                     readOnly={activeEditField !== 'email'}
+                                                    ref={emailInputRef}
                                                     onChange={e => setUserProfile({ ...userProfile, email: e.target.value })}
-                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[8px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
+                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[2px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
                                                         ${activeEditField === 'email'
-                                                            ? 'border-[#F2F2F7] text-[#F2F2F7] bg-white/[0.06] shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                                                            : 'border-white/[0.08] text-[#888]'}
+                                                            ? 'border-[#F2F2F7] text-white bg-white/[0.08] shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-[1.01]'
+                                                            : 'border-white/[0.08] text-[#888] hover:border-white/20'}
                                                     `}
                                                 />
+                                                {/* Corners */}
+                                                <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 group-hover:border-white/40" />
+                                                <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20 group-hover:border-white/40" />
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation()
@@ -1310,47 +1679,55 @@ const Dashboard = ({ onLogout }) => {
                                                 <input
                                                     type="password"
                                                     value={userProfile.securityKey || '............'}
-                                                    placeholder="••••••••••••"
+                                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                                     readOnly={activeEditField !== 'securityKey'}
+                                                    ref={securityKeyInputRef}
                                                     onChange={e => setUserProfile({ ...userProfile, securityKey: e.target.value })}
-                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[8px] pl-5 pr-32 text-2xl font-bold tracking-widest focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
+                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[2px] pl-5 pr-32 text-2xl font-bold tracking-widest focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
                                                         ${activeEditField === 'securityKey'
-                                                            ? 'border-[#00FF41] text-[#F2F2F7] bg-white/[0.06] shadow-[0_0_15px_rgba(0,255,65,0.2)]'
+                                                            ? 'border-[#00FF41] text-white bg-[#00FF41]/[0.05] shadow-[0_0_20px_rgba(0,255,65,0.25)] scale-[1.01]'
                                                             : 'border-white/[0.08] text-[#F2F2F7] group-hover:border-[#00FF41]/50'}
                                                     `}
                                                 />
+                                                {/* Corners */}
+                                                <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-white/10 group-hover:border-[#00FF41]/30" />
+                                                <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-white/10 group-hover:border-[#00FF41]/30" />
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         setActiveEditField(activeEditField === 'securityKey' ? null : 'securityKey')
                                                     }}
-                                                    className={`absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 border rounded text-[10px] font-bold tracking-[0.15em] transition-all duration-300
+                                                    className={`absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 border rounded-[2px] text-[10px] font-bold tracking-[0.15em] transition-all duration-300
                                                         ${activeEditField === 'securityKey'
                                                             ? 'bg-[#00FF41]/10 border-[#00FF41] text-[#00FF41] hover:bg-[#00FF41]/20'
                                                             : 'bg-white/[0.02] border-white/[0.1] text-[#666] hover:text-[#F2F2F7] hover:border-white/[0.2] hover:bg-white/[0.05]'}
                                                     `}
                                                 >
-                                                    {activeEditField === 'securityKey' ? 'SAVE KEY' : 'RESET KEY'}
+                                                    {activeEditField === 'securityKey' ? 'SAVE KEY' : 'REKEY NODE'}
                                                 </button>
                                             </div>
                                         </div>
 
                                         {/* Phone */}
                                         <div className="flex flex-col gap-3">
-                                            <label className="text-[11px] text-[#888] font-bold tracking-[0.2em] uppercase pl-1">Phone Number</label>
+                                            <label className="text-[11px] text-[#888] font-bold tracking-[0.2em] uppercase pl-1">Contact</label>
                                             <div className="relative group" onClick={(e) => e.stopPropagation()}>
                                                 <input
                                                     type="text"
                                                     placeholder=""
                                                     value={userProfile.phone}
                                                     readOnly={activeEditField !== 'phone'}
+                                                    ref={phoneInputRef}
                                                     onChange={e => setUserProfile({ ...userProfile, phone: e.target.value })}
-                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[8px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
+                                                    className={`w-full h-14 bg-white/[0.03] border rounded-[2px] px-5 text-[15px] font-medium tracking-wide focus:outline-none transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.3)]
                                                         ${activeEditField === 'phone'
-                                                            ? 'border-[#F2F2F7] text-[#F2F2F7] bg-white/[0.06] shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                                                            : 'border-white/[0.08] text-[#888]'}
+                                                            ? 'border-[#F2F2F7] text-white bg-white/[0.08] shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-[1.01]'
+                                                            : 'border-white/[0.08] text-[#888] hover:border-white/20'}
                                                     `}
                                                 />
+                                                {/* Corners */}
+                                                <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 group-hover:border-white/40" />
+                                                <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20 group-hover:border-white/40" />
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation()
@@ -1435,13 +1812,9 @@ const Dashboard = ({ onLogout }) => {
                                             <button
                                                 key={loc}
                                                 onClick={() => {
+                                                    setCurrentLocation(loc)
+                                                    setIsLocationOpen(false)
                                                     if (loc !== 'All locations') {
-                                                        setActiveGridCamera(loc)
-                                                        setIsCameraDetailOpen(true)
-                                                        setIsLocationOpen(false)
-                                                    } else {
-                                                        setCurrentLocation(loc)
-                                                        setIsLocationOpen(false)
                                                         setCurrentCamera('All cameras')
                                                     }
                                                 }}
@@ -1465,11 +1838,6 @@ const Dashboard = ({ onLogout }) => {
                                                     </span>
                                                 </div>
 
-                                                {/* Corner Accents */}
-                                                <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                                <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                                <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                                <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
                                             </button>
                                         )
                                     })}
@@ -1568,10 +1936,6 @@ const Dashboard = ({ onLogout }) => {
                                                 </span>
                                             </div>
 
-                                            <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                            <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                            <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
-                                            <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/10 group-hover:border-[#F2F2F7] transition-colors" />
                                         </button>
                                     ))}
                                 </div>
@@ -1806,7 +2170,7 @@ const Dashboard = ({ onLogout }) => {
                                                 <div className="flex flex-col">
                                                     <label className="text-[10px] text-[#666] font-bold tracking-[0.2em] uppercase mb-2 pl-1">Password <span className="text-[#333] ml-2">(OPTIONAL)</span></label>
                                                     <div className="relative group">
-                                                        <input type="password" placeholder="••••••••" className="w-full h-12 bg-[#0A0A0A] border border-white/[0.1] rounded-[2px] px-4 text-[#F2F2F7] placeholder-[#333] text-sm font-mono focus:outline-none focus:border-[#F2F2F7]/50 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]" />
+                                                        <input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="w-full h-12 bg-[#0A0A0A] border border-white/[0.1] rounded-[2px] px-4 text-[#F2F2F7] placeholder-[#333] text-sm font-mono focus:outline-none focus:border-[#F2F2F7]/50 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]" />
                                                         <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 group-hover:border-[#F2F2F7] transition-colors pointer-events-none" />
                                                         <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/20 group-hover:border-[#F2F2F7] transition-colors pointer-events-none" />
                                                     </div>
@@ -1873,10 +2237,10 @@ const Dashboard = ({ onLogout }) => {
                                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                className="w-full max-w-6xl h-[85vh] bg-[#050505]/80 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_100px_rgba(0,0,0,0.9)] rounded-3xl relative overflow-hidden flex flex-col"
+                                className="w-full max-w-4xl h-[80vh] bg-[#0A0A0A] backdrop-blur-3xl border border-white/[0.15] shadow-[0_0_100px_rgba(0,0,0,0.9)] rounded-2xl relative overflow-hidden flex flex-col"
                             >
                                 {/* Header */}
-                                <div className="h-20 border-b border-white/[0.08] flex items-center justify-between px-10 bg-white/[0.01]">
+                                <div className="h-20 border-b border-white/[0.15] flex items-center justify-between px-10 bg-white/[0.01]">
                                     <div className="flex items-center gap-4">
                                         <div className="w-3 h-3 rounded-full bg-[#00FF41] shadow-[0_0_15px_#00FF41]" />
                                         <h2 className="text-2xl font-bold text-[#F2F2F7] tracking-[0.2em] uppercase">Messages</h2>
@@ -1896,7 +2260,7 @@ const Dashboard = ({ onLogout }) => {
 
                                 <div className="flex-1 flex overflow-hidden">
                                     {/* Sidebar */}
-                                    <div className="w-[320px] border-r border-white/[0.08] flex flex-col bg-[#080808]/50">
+                                    <div className="w-[320px] border-r border-white/[0.15] flex flex-col bg-[#0F0F0F]">
                                         <div className="p-6">
                                             <div className="relative">
                                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666]" size={16} />
@@ -1927,14 +2291,14 @@ const Dashboard = ({ onLogout }) => {
                                     </div>
 
                                     {/* Chat Area */}
-                                    <div className="flex-1 flex flex-col bg-[#050505]/50 relative">
+                                    <div className="flex-1 flex flex-col bg-[#050505] relative">
                                         <div className="flex-1 p-8 overflow-y-auto flex flex-col gap-6 relative z-10">
                                             {chatHistory[activeChat].map((msg) => (
                                                 <div key={msg.id} className={`flex items-start gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                                                     <div className={`w-10 h-10 rounded-full border flex items-center justify-center text-[10px] font-mono overflow-hidden shrink-0 shadow-lg
-                                                        ${msg.role === 'user' ? 'bg-transparent border-white/20' : 'bg-[#111] border-white/10 text-[#F2F2F7]'}`}>
+                                                         ${msg.role === 'user' ? 'bg-transparent border-white/20' : 'bg-[#111] border-white/10 text-[#F2F2F7]'}`}>
                                                         {msg.role === 'user' ? (
-                                                            <img src="/Zenthos.png" className="w-full h-full object-cover" alt="User" />
+                                                            <img src={zenthosImg} className="w-full h-full object-cover" alt="User" />
                                                         ) : (
                                                             msg.sender === 'System Admin' ? 'SYS' : (msg.sender === 'Security Bot' ? 'SEC' : 'NET')
                                                         )}
@@ -1945,7 +2309,7 @@ const Dashboard = ({ onLogout }) => {
                                                             <span className="text-[10px] text-[#444] font-mono">{msg.time}</span>
                                                         </div>
                                                         <div className={`p-5 border rounded-2xl text-[15px] leading-relaxed shadow-lg
-                                                            ${msg.role === 'user' ? 'bg-[#F2F2F7] text-black border-[#F2F2F7] rounded-tr-none' : 'bg-[#111] border-white/10 text-[#ccc] rounded-tl-none'}`}>
+                                                             ${msg.role === 'user' ? 'bg-[#F2F2F7] text-black border-[#F2F2F7] rounded-tr-none' : 'bg-[#111] border-white/10 text-[#ccc] rounded-tl-none'}`}>
                                                             {msg.text}
                                                         </div>
                                                     </div>
@@ -1953,21 +2317,74 @@ const Dashboard = ({ onLogout }) => {
                                             ))}<div ref={messagesEndRef} />
                                         </div>
 
-                                        {/* Input */}
-                                        <div className="h-24 border-t border-white/[0.08] p-5 flex gap-4 bg-[#080808]/80 backdrop-blur-md z-20 items-center">
-                                            <input
-                                                type="text"
-                                                value={inputMessage}
-                                                onChange={(e) => setInputMessage(e.target.value)}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                                placeholder="Type message..."
-                                                className="flex-1 h-full bg-[#050505] border border-white/[0.08] rounded-xl px-6 text-lg text-white focus:outline-none focus:border-[#F2F2F7] transition-all"
-                                            />
+                                        {/* Input Area - High-Performance Tactical UI */}
+                                        <div className="h-24 border-t border-white/[0.15] px-8 flex gap-4 bg-[#080808] z-20 items-center">
+                                            <div className="flex gap-2">
+                                                <button
+                                                    disabled={activeChat === 'Security Bot'}
+                                                    className={`w-12 h-12 flex items-center justify-center border rounded-[4px] transition-all duration-300 group shadow-inner
+                                                        ${activeChat === 'Security Bot'
+                                                            ? 'text-[#222] border-white/[0.03] cursor-not-allowed'
+                                                            : 'text-[#555] hover:text-[#eee] hover:bg-white/[0.03] border-white/[0.1] hover:border-white/30'}
+                                                    `}
+                                                    title={activeChat === 'Security Bot' ? "Read-only Channel" : "Attach File"}
+                                                >
+                                                    <Paperclip size={18} className={`transition-transform ${activeChat === 'Security Bot' ? 'opacity-20' : 'group-hover:rotate-12 opacity-60 group-hover:opacity-100'}`} />
+                                                </button>
+                                                <button
+                                                    disabled={activeChat === 'Security Bot'}
+                                                    onClick={() => setIsRecording(!isRecording)}
+                                                    className={`w-12 h-12 flex items-center justify-center border transition-all duration-300 rounded-[4px] group relative shadow-inner
+                                                        ${activeChat === 'Security Bot'
+                                                            ? 'text-[#222] border-white/[0.03] cursor-not-allowed'
+                                                            : isRecording
+                                                                ? 'bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
+                                                                : 'text-[#555] hover:text-[#eee] hover:bg-white/[0.03] border-white/[0.1] hover:border-white/30'}
+                                                    `}
+                                                    title={activeChat === 'Security Bot' ? "Read-only Channel" : "Voice Note"}
+                                                >
+                                                    <Mic size={18} className={`transition-opacity ${isRecording ? 'animate-pulse' : (activeChat === 'Security Bot' ? 'opacity-20' : 'opacity-60 group-hover:opacity-100')}`} />
+                                                    {isRecording && activeChat !== 'Security Bot' && (
+                                                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#080808] animate-ping" />
+                                                    )}
+                                                </button>
+                                            </div>
+
+                                            <div className="flex-1 relative h-12">
+                                                <input
+                                                    type="text"
+                                                    disabled={activeChat === 'Security Bot'}
+                                                    value={activeChat === 'Security Bot' ? "" : inputMessage}
+                                                    onChange={(e) => setInputMessage(e.target.value)}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                                    placeholder={activeChat === 'Security Bot' ? "SECURE READ-ONLY CHANNEL" : (isRecording ? "Transcribing secure uplink..." : "Send a message...")}
+                                                    className={`w-full h-full bg-black/60 border rounded-[4px] px-6 text-[14px] text-white placeholder-[#333] focus:outline-none transition-all duration-500 tracking-wide
+                                                        ${activeChat === 'Security Bot'
+                                                            ? 'border-white/[0.03] opacity-40 cursor-not-allowed bg-transparent'
+                                                            : isRecording ? 'border-red-500/40' : 'border-white/[0.1] focus:border-white/40 focus:bg-black/80'}
+                                                    `}
+                                                />
+                                                {/* Scanning Status Line */}
+                                                {isRecording && activeChat !== 'Security Bot' && (
+                                                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-950 overflow-hidden rounded-b-[4px]">
+                                                        <div className="w-full h-full bg-red-500 animate-progress origin-left" />
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <button
+                                                disabled={activeChat === 'Security Bot'}
                                                 onClick={handleSendMessage}
-                                                className="w-14 h-full bg-[#F2F2F7] rounded-xl flex items-center justify-center hover:bg-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 active:scale-95"
+                                                className={`px-6 h-12 border rounded-[4px] flex items-center gap-3 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.5)] active:scale-95 group
+                                                    ${activeChat === 'Security Bot'
+                                                        ? 'bg-transparent border-white/[0.03] text-[#444] cursor-not-allowed'
+                                                        : 'bg-[#F2F2F7] hover:bg-white border-white/[0.1] text-black'}
+                                                `}
                                             >
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-black ml-1"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                                                <span className={`text-[11px] font-bold tracking-[0.2em] uppercase ${activeChat === 'Security Bot' ? 'text-[#333]' : 'text-black'}`}>
+                                                    {activeChat === 'Security Bot' ? "LOCKED" : "SEND"}
+                                                </span>
+                                                <ArrowRight size={16} className={`${activeChat === 'Security Bot' ? 'text-[#222]' : 'text-black group-hover:translate-x-1 transition-transform'}`} />
                                             </button>
                                         </div>
                                     </div>
@@ -1975,7 +2392,7 @@ const Dashboard = ({ onLogout }) => {
                             </motion.div>
                         </div>
                     )}
-                </AnimatePresence >
+                </AnimatePresence>
 
                 {/* CAMERA DETAIL MODAL (NEW POPUP) */}
                 <AnimatePresence>
@@ -2003,10 +2420,21 @@ const Dashboard = ({ onLogout }) => {
                                     <div className="flex items-center gap-6">
                                         <div className="flex items-center gap-3">
                                             <h2 className="text-[28px] font-bold text-[#F2F2F7] tracking-[0.15em] uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{activeGridCamera || 'Living Room'}</h2>
-                                            <div className="flex items-center gap-2 px-2.5 py-1 bg-[#00FF41]/10 border border-[#00FF41]/30 rounded-[2px] shadow-[0_0_10px_rgba(0,255,65,0.2)]">
-                                                <div className="w-2 h-2 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]" />
-                                                <span className="text-[11px] font-bold text-[#00FF41] tracking-widest uppercase">LIVE FEED</span>
-                                            </div>
+                                            {/* STATUS INDICATOR */}
+                                            {(() => {
+                                                const cam = cameraRegistry[activeGridCamera || 'Living Room']
+                                                const isOffline = cam?.offline || systemStats.net === 0
+                                                const isAlert = cam?.alert
+
+                                                return (
+                                                    <div className={`flex items-center gap-2 px-2.5 py-1 ${isOffline ? 'bg-white/5 border-white/10' : (isAlert ? 'bg-orange-500/10 border-orange-500/30' : 'bg-[#00FF41]/10 border-[#00FF41]/30')} border rounded-[2px] shadow-[0_0_10px_rgba(255,255,255,0.05)]`}>
+                                                        <div className={`w-2 h-2 rounded-full ${isOffline ? 'bg-white/20' : (isAlert ? 'bg-orange-500 animate-pulse' : 'bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]')}`} />
+                                                        <span className={`text-[11px] font-bold tracking-widest uppercase ${isOffline ? 'text-white/40' : (isAlert ? 'text-orange-500' : 'text-[#00FF41]')}`}>
+                                                            {systemStats.net === 0 ? 'SCANNING' : (isOffline ? 'OFFLINE' : 'LIVE FEED')}
+                                                        </span>
+                                                    </div>
+                                                )
+                                            })()}
                                         </div>
                                     </div>
 
@@ -2016,10 +2444,23 @@ const Dashboard = ({ onLogout }) => {
                                                 <Edit2 size={14} className="group-hover:text-[#F2F2F7] transition-colors" />
                                                 Config
                                             </button>
-                                            <button className="px-6 py-2.5 bg-[#FF3B30]/10 hover:bg-[#FF3B30]/20 border border-[#FF3B30]/20 hover:border-[#FF3B30]/40 text-[#F2F2F7] text-[12px] font-bold tracking-[0.15em] uppercase rounded-[2px] transition-all flex items-center gap-2 group">
-                                                <LogOut size={14} />
-                                                Disconnect
-                                            </button>
+                                            {(cameraRegistry[activeGridCamera || 'Living Room']?.offline || systemStats.net === 0) ? (
+                                                <button
+                                                    onClick={() => toggleCameraConnection(activeGridCamera || 'Living Room')}
+                                                    className="px-6 py-2.5 bg-[#00FF41]/10 hover:bg-[#00FF41]/20 border border-[#00FF41]/20 hover:border-[#00FF41]/40 text-[#00FF41] text-[12px] font-bold tracking-[0.15em] uppercase rounded-[2px] transition-all flex items-center gap-2 group shadow-[0_0_15px_rgba(0,255,65,0.1)]"
+                                                >
+                                                    <Link size={14} className="group-hover:scale-110 transition-transform" />
+                                                    Connect
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => toggleCameraConnection(activeGridCamera || 'Living Room')}
+                                                    className="px-6 py-2.5 bg-[#FF3B30]/10 hover:bg-[#FF3B30]/20 border border-[#FF3B30]/20 hover:border-[#FF3B30]/40 text-[#F2F2F7] text-[12px] font-bold tracking-[0.15em] uppercase rounded-[2px] transition-all flex items-center gap-2 group"
+                                                >
+                                                    <LogOut size={14} />
+                                                    Disconnect
+                                                </button>
+                                            )}
                                         </div>
                                         <button
                                             onClick={() => setIsCameraDetailOpen(false)}
@@ -2040,41 +2481,109 @@ const Dashboard = ({ onLogout }) => {
                                     <div className="p-10 flex flex-col gap-8">
 
                                         {/* VIDEO PLAYER SECTION (First Fold) */}
-                                        <div className="relative w-full aspect-video bg-black rounded-[4px] border border-white/10 overflow-hidden group shadow-2xl">
+                                        <div
+                                            id="camera-full-view"
+                                            className="relative w-full aspect-video bg-black rounded-[4px] border border-white/10 overflow-hidden group shadow-2xl"
+                                        >
                                             {/* Tech Overlay */}
                                             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] opacity-30 pointer-events-none" />
 
-                                            {/* Status Top Right */}
-                                            <div className="absolute top-8 right-8 flex items-center gap-3 z-20">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41]" style={{ boxShadow: '0 0 15px #00FF41' }} />
-                                                <span className="text-[14px] font-bold text-[#F2F2F7] tracking-widest uppercase text-shadow-[0_1px_4px_rgba(0,0,0,1)]">Active</span>
+                                            {/* Status Top Right - SIGNAL DENSITY INDICATOR */}
+                                            <div className="absolute top-8 right-8 flex items-end gap-1.5 z-20 h-4">
+                                                {(() => {
+                                                    const cam = cameraRegistry[activeGridCamera || 'Living Room']
+                                                    const isOffline = cam?.offline || systemStats.net === 0
+                                                    // Determine signal density based on hardware link verified %
+                                                    const signalBars = systemStats.net > 80 ? 4 : systemStats.net > 50 ? 3 : systemStats.net > 20 ? 2 : 1
+
+                                                    return [1, 2, 3, 4].map((i) => (
+                                                        <motion.div
+                                                            key={i}
+                                                            animate={{
+                                                                height: `${25 + (i * 18)}%`,
+                                                                backgroundColor: (!isOffline && signalBars >= i) ? "#00FF41" : "rgba(255, 255, 255, 0.08)",
+                                                                boxShadow: (!isOffline && signalBars >= i) ? "0 0 12px rgba(0, 255, 65, 0.5)" : "none"
+                                                            }}
+                                                            className="w-[6px] rounded-[1px] transition-colors"
+                                                        />
+                                                    ))
+                                                })()}
                                             </div>
 
-                                            {/* CENTER CONTENT */}
-                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 z-10">
-                                                <div className="relative">
-                                                    {/* Outer Ring */}
-                                                    <div className="w-32 h-32 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.01]">
-                                                        <div className="absolute inset-0 rounded-full border border-t-[#F2F2F7]/40 border-l-transparent border-r-transparent border-b-transparent animate-[spin_3s_linear_infinite]" />
-                                                        <div className="absolute inset-2 rounded-full border border-b-[#F2F2F7]/20 border-l-transparent border-r-transparent border-t-transparent animate-[spin_2s_linear_infinite_reverse]" />
-                                                    </div>
-                                                    <Camera size={48} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#666] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
-                                                </div>
+                                            {/* CENTER CONTENT - PROFESSIONAL SURVEILLANCE OSD */}
+                                            <div className="absolute inset-0 z-10">
+                                                {(() => {
+                                                    const cam = cameraRegistry[activeGridCamera || 'Living Room']
+                                                    const isOffline = cam?.offline || systemStats.net === 0
 
-                                                <div className="flex flex-col items-center gap-3">
-                                                    <h3 className="text-[24px] font-bold text-[#F2F2F7] tracking-[0.25em] uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                                                        Stream Interrupted
-                                                    </h3>
-                                                </div>
+                                                    if (isOffline) {
+                                                        return (
+                                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-black/40 backdrop-blur-sm">
+                                                                <WifiOff size={48} className="text-red-500/40 animate-pulse" />
+                                                                <h3 className="text-[20px] font-mono font-black tracking-[0.4em] uppercase text-red-500">SIGNAL_LOST</h3>
+                                                            </div>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <>
+                                                                {/* TOP BAR - SOURCE ID */}
+                                                                <div className="absolute top-6 left-6 flex items-center gap-3">
+                                                                    <div className="flex items-center gap-2 px-2 py-0.5 bg-red-600 rounded-[1px] animate-pulse">
+                                                                        <span className="text-[9px] font-mono font-black text-white uppercase tracking-tighter">LIVE</span>
+                                                                    </div>
+                                                                    <div className="w-[1px] h-3 bg-white/20" />
+                                                                    <span className="text-[11px] font-mono font-black text-white tracking-[0.2em] uppercase">{activeGridCamera || 'CAM_01'}</span>
+                                                                </div>
 
-                                                <button className="relative group px-10 py-4 border border-white overflow-hidden rounded-[2px] cursor-pointer">
-                                                    <div className="absolute inset-0 bg-white z-0 w-full h-full transition-transform duration-500 ease-[0.22,1,0.36,1] group-hover:translate-x-full" />
-                                                    <span className="relative z-10 text-black group-hover:text-white text-[13px] font-mono font-bold tracking-[0.25em] uppercase transition-colors duration-300">
-                                                        Re-Initialize Link
-                                                    </span>
-                                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-transparent group-hover:border-white/50 transition-colors delay-100" />
-                                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-transparent group-hover:border-white/50 transition-colors delay-100" />
-                                                </button>
+
+
+                                                                {/* BOTTOM CONTROLS & SLIDER */}
+                                                                <div className="absolute bottom-6 left-6 right-6 flex items-center gap-6">
+                                                                    {/* Time Tracking (YouTube style) */}
+                                                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-black/40 backdrop-blur-sm border border-white/10 rounded-[1px] shrink-0">
+                                                                        <span className="text-[10px] font-mono font-black text-white tracking-widest leading-none">
+                                                                            {getPlaybackTime(playbackProgress)} / 24:00
+                                                                        </span>
+                                                                    </div>
+
+                                                                    {/* Multimedia Slider (White & Thicker) */}
+                                                                    <div
+                                                                        className="relative flex-1 h-8 flex items-center group/slider cursor-pointer"
+                                                                        onMouseDown={handleSliderInteraction}
+                                                                    >
+                                                                        <div className="absolute inset-0 h-[4px] bg-white/10 top-1/2 -translate-y-1/2 rounded-full" />
+                                                                        <div
+                                                                            className="absolute left-0 h-[4px] bg-white top-1/2 -translate-y-1/2 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                                                                            style={{ width: `${playbackProgress}%` }}
+                                                                        />
+                                                                        <div
+                                                                            className="absolute w-2.5 h-2.5 bg-white rounded-full top-1/2 -translate-y-1/2 group-hover/slider:scale-125 transition-transform"
+                                                                            style={{ left: `${playbackProgress}%`, transform: 'translate(-50%, -50%)' }}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Expand Only */}
+                                                                    <div className="flex items-center shrink-0">
+                                                                        <Maximize
+                                                                            size={18}
+                                                                            className={`${isFullscreen ? 'text-[#00FF41]' : 'text-white/80'} hover:text-white transition-all cursor-pointer hover:scale-110 active:scale-90`}
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                toggleFullscreen();
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Center Crosshair (Extremely Subtle) */}
+                                                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 opacity-10">
+                                                                    <div className="w-full h-[1px] bg-white absolute top-1/2" />
+                                                                    <div className="h-full w-[1px] bg-white absolute left-1/2" />
+                                                                </div>
+                                                            </>
+                                                        )
+                                                    }
+                                                })()}
                                             </div>
 
                                             {/* Corner Markers (Titanium Style) */}
@@ -2233,9 +2742,139 @@ const Dashboard = ({ onLogout }) => {
                     )}
                 </AnimatePresence>
 
-            </div >
-        </div >
+                {/* SIGN OUT GRID - TACTICAL POWER MENU */}
+                <AnimatePresence>
+                    {isLogoutModalOpen && (
+                        <div className="fixed inset-0 z-[1500] flex items-center justify-center p-6">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsLogoutModalOpen(false)}
+                                className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+                            />
+
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.8, y: 30 }}
+                                className="w-full max-w-4xl relative z-10"
+                            >
+                                <div className="flex flex-col gap-10">
+                                    {/* Minimal Header & Close */}
+                                    <div className="flex items-center justify-between px-4">
+                                        <div />
+                                        <button
+                                            onClick={() => setIsLogoutModalOpen(false)}
+                                            className="w-12 h-12 flex items-center justify-center text-[#666] hover:text-[#F2F2F7] transition-all group relative"
+                                        >
+                                            <div className="relative p-2">
+                                                <X size={24} className="group-hover:scale-110 transition-transform" />
+                                                <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#666] group-hover:border-[#F2F2F7] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                                                <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#666] group-hover:border-[#F2F2F7] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                    {/* 2-Option Grid */}
+                                    <div className="grid grid-cols-2 gap-6">
+                                        {/* RESTART */}
+                                        <motion.div
+                                            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.03)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => { setIsLogoutModalOpen(false); setIsReloading(true); setTimeout(() => setIsReloading(false), 3000); }}
+                                            className="h-64 bg-white/[0.015] border border-white/10 rounded-2xl flex flex-col items-center justify-center gap-6 cursor-pointer relative group transition-all duration-500"
+                                        >
+                                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/10 group-hover:border-white/40 transition-colors" />
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/10 group-hover:border-white/40 transition-colors" />
+                                            <div className="p-6 rounded-full bg-white/[0.03] border border-white/10 group-hover:scale-110 group-hover:bg-white/10 transition-all duration-700 shadow-[0_0_40px_rgba(255,255,255,0.02)]">
+                                                <RefreshCw size={44} className="text-white group-hover:rotate-180 transition-transform duration-1000" />
+                                            </div>
+                                            <span className="text-[20px] font-black text-white tracking-[0.4em] uppercase">Restart</span>
+                                        </motion.div>
+
+                                        {/* SIGN OUT */}
+                                        <motion.div
+                                            whileHover={{ scale: 1.02, backgroundColor: 'rgba(239,68,68,0.05)', borderColor: 'rgba(239,68,68,0.3)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={onLogout}
+                                            className="h-64 bg-red-600/[0.02] border border-red-500/20 rounded-2xl flex flex-col items-center justify-center gap-6 cursor-pointer relative group transition-all duration-500"
+                                        >
+                                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-red-500/20 group-hover:border-red-500/60 transition-colors" />
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-red-500/20 group-hover:border-red-500/60 transition-colors" />
+                                            <div className="p-6 rounded-full bg-red-500/[0.03] border border-red-500/20 group-hover:scale-110 group-hover:bg-red-500 group-hover:shadow-[0_0_50px_#ef4444] transition-all duration-700">
+                                                <LogOut size={44} className="text-red-500 group-hover:text-white transition-colors" />
+                                            </div>
+                                            <span className="text-[20px] font-black text-red-500 tracking-[0.4em] uppercase">Sign Out</span>
+                                        </motion.div>
+                                    </div>
+
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+
+                {/* SYSTEM RELOAD OVERLAY - SPECTRAL LOGO */}
+                <AnimatePresence>
+                    {isReloading && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
+                            className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40 backdrop-blur-[40px]"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0, filter: 'blur(20px)' }}
+                                animate={{
+                                    scale: [0.85, 0.9, 0.85],
+                                    opacity: [0.05, 0.12, 0.05],
+                                    filter: ['blur(4px)', 'blur(8px)', 'blur(4px)']
+                                }}
+                                transition={{
+                                    duration: 3,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                                className="relative"
+                            >
+                                <img
+                                    src={teletraanLogo}
+                                    className="w-[600px] h-[600px] grayscale brightness-200"
+                                    alt="Teletraan Spectral Logo"
+                                />
+
+                                {/* TACTICAL SCAN LINE - RELOAD SPECIFIC */}
+                                <motion.div
+                                    animate={{ top: ["-10%", "110%"] }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="absolute left-0 right-0 h-[2px] bg-white/20 blur-[1px] z-10"
+                                />
+                            </motion.div>
+
+                            {/* RELOAD TELEMETRY */}
+                            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+                                <span className="text-white text-[11px] font-mono font-black tracking-[0.5em] uppercase animate-pulse">
+                                    SYSTEM LOADING... PLEASE WAIT
+                                </span>
+                                <div className="w-48 h-[1px] bg-white/10 relative overflow-hidden">
+                                    <motion.div
+                                        initial={{ x: "-100%" }}
+                                        animate={{ x: "100%" }}
+                                        transition={{ duration: 3, ease: "easeInOut" }}
+                                        className="absolute inset-0 bg-white/40"
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+            </div>
+        </div>
     )
 }
 
 export default Dashboard
+

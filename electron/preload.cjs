@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('electron', {
 });
 
 contextBridge.exposeInMainWorld('api', {
-    // Reserved for future custom APIs
+    onSystemStats: (callback) => ipcRenderer.on('system-stats', (event, stats) => callback(stats)),
+    toggleNetwork: () => ipcRenderer.send('toggle-network'),
 });

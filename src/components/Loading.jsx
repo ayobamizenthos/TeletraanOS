@@ -1,165 +1,179 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShieldCheck, Zap, Server, LayoutDashboard } from 'lucide-react'
+import { ShieldCheck, Zap, Server, LayoutDashboard, Cpu, Database, Network, Binary } from 'lucide-react'
 import teletraanLogo from '../assets/teletraan.svg'
 
 const Loading = () => {
-
     const [progress, setProgress] = useState(0)
     const [phaseIndex, setPhaseIndex] = useState(0)
-    const [isComplete, setIsComplete] = useState(false)
+    const [telemetry, setTelemetry] = useState({
+        packets: 0,
+        voltage: 12.4,
+        load: 12
+    })
 
-    // Tactical / Professional Phrasing - User Provided
     const phases = [
-        { text: "MAXIMUM PROTECTION" },
-        { text: "ACCESS CONTROL" },
-        { text: "AI-POWERED SURVEILLANCE" },
+        { text: "INITIALIZING NEURAL CORE", sub: "Establishing secure uplink..." },
+        { text: "DECRYPTING SYSTEM ASSETS", sub: "Unlimited Updates sequence active" },
+        { text: "CALIBRATING TACTICAL ARRAY", sub: "Synchronizing global mesh" },
+        { text: "AUTHORIZING SYSTEM ACCESS", sub: "Handshake verified" }
     ]
 
     useEffect(() => {
-        // Phase Cycling (slower, more deliberate)
         const phaseInterval = setInterval(() => {
-            setPhaseIndex(prev => {
-                if (prev >= phases.length - 1) {
-                    clearInterval(phaseInterval)
-                    return phases.length - 1
-                }
-                return prev + 1
-            })
-        }, 1100)
+            setPhaseIndex(prev => (prev < phases.length - 1 ? prev + 1 : prev))
+        }, 1500)
 
-        // Progress Logic (Smooth acceleration curve)
-        const interval = setInterval(() => {
+        const progressInterval = setInterval(() => {
             setProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval)
-                    setIsComplete(true)
-                    return 100
-                }
-                // Ease-out simulation
-                const remaining = 100 - prev
-                const increment = Math.max(0.4, remaining * 0.05)
-                const noise = Math.random() * 0.3
-                return Math.min(prev + increment + noise, 100)
+                if (prev >= 100) return 100
+                const increment = Math.random() * 1.5
+                return Math.min(prev + increment, 100)
             })
-        }, 55)
+
+            // Random telemetry noise
+            setTelemetry({
+                packets: Math.floor(Math.random() * 10000),
+                voltage: (12.2 + Math.random() * 0.4).toFixed(1),
+                load: Math.floor(20 + Math.random() * 40)
+            })
+        }, 50)
 
         return () => {
-            clearInterval(interval)
             clearInterval(phaseInterval)
+            clearInterval(progressInterval)
         }
     }, [])
 
     return (
-        <div className="fixed inset-0 bg-[#050505] flex flex-col items-center justify-center z-50 overflow-hidden font-sans text-white">
-
-            {/* 1. ATMOSPHERIC BACKGROUND LAYERS */}
-
-            {/* Deep Radial Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1a1a1a_0%,#000000_70%)] opacity-80 pointer-events-none" />
-
-            {/* Subtle Animated Mesh/Grid */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        <div className="fixed inset-0 bg-[#020202] flex flex-col items-center justify-center z-[200] overflow-hidden font-sans text-white">
+            {/* BACKGROUND EFFECTS */}
+            <div className="absolute inset-0 bg-[#050505]" />
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
                 style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
-                    backgroundSize: '80px 80px'
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
                 }}
             />
 
-            {/* Cinematic Noise */}
-            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}
-            />
+            {/* VIGNETTE & SCANLINES */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] z-10" />
+            <div className="absolute inset-0 pointer-events-none z-20 opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
 
-            {/* 2. MAIN CENTERAL CONTENT */}
-            <div className="relative z-10 flex flex-col items-center w-full max-w-[500px] px-6">
+            {/* MAIN CONTENT AREA */}
+            <div className="relative z-30 flex flex-col items-center w-full max-w-4xl px-12">
 
-                {/* LOGO: Breathing Animation */}
-                {/* LOGO: Breathing Animation via Morph */}
-                <div className="relative mb-16 flex justify-center items-center">
-                    <div className="absolute -inset-20 bg-white/5 filter blur-[50px] rounded-full animate-pulse px-4" />
-                    <motion.img
-                        layoutId="teletraan-hero-logo"
-                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                        src={teletraanLogo}
-                        alt="Teletraan"
-                        className="w-[380px] md:w-[480px] relative z-20 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
-                    />
+                {/* LOGO SECTION */}
+                <div className="relative mb-24 flex flex-col items-center">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1 }}
+                        className="relative"
+                    >
+                        {/* Glow Behind Logo */}
+                        <div className="absolute -inset-24 bg-white/[0.03] blur-[80px] rounded-full animate-pulse" />
+
+                        <img src={teletraanLogo} className="w-[420px] relative z-10 drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]" alt="Teletraan" />
+
+                        {/* Scanning Bar over Logo */}
+                        <motion.div
+                            animate={{ top: ['-10%', '110%'] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute left-0 right-0 h-[2px] bg-white/20 blur-[1px] z-20"
+                        />
+                    </motion.div>
                 </div>
 
+                {/* TELEMETRY READOUTS (SIDE) */}
+                <div className="absolute left-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-8 opacity-40">
+                    <div className="flex flex-col gap-1 items-start">
+                        <span className="text-[10px] font-black tracking-widest text-white/40 uppercase">Voltage</span>
+                        <span className="text-xl font-mono text-white/80">{telemetry.voltage}V</span>
+                    </div>
+                    <div className="flex flex-col gap-1 items-start">
+                        <span className="text-[10px] font-black tracking-widest text-white/40 uppercase">Core Load</span>
+                        <span className="text-xl font-mono text-white/80">{telemetry.load}%</span>
+                    </div>
+                </div>
 
-                {/* LOADING BAR: HEAVY DUTY TACTICAL */}
-                <motion.div
-                    initial={{ opacity: 0, scaleX: 0.8 }}
-                    animate={{ opacity: 1, scaleX: 1 }}
-                    transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
-                    className="w-full max-w-[800px] flex flex-col gap-4 relative z-30"
-                >
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-8 opacity-40 text-right">
+                    <div className="flex flex-col gap-1 items-end">
+                        <span className="text-[10px] font-black tracking-widest text-white/40 uppercase">Packet Stream</span>
+                        <span className="text-xl font-mono text-white/80">{telemetry.packets.toLocaleString()}</span>
+                    </div>
+                    <div className="flex flex-col gap-1 items-end">
+                        <span className="text-[10px] font-black tracking-widest text-white/40 uppercase">Link Status</span>
+                        <span className="text-xl font-mono text-[#00FF41]">STABLE</span>
+                    </div>
+                </div>
 
-                    {/* Status Text - BIG & BOLD */}
-                    <div className="flex justify-between items-end px-2 mb-2">
-                        <AnimatePresence mode="wait">
-                            <motion.span
-                                key={phaseIndex}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="font-mono text-[16px] md:text-[20px] font-bold tracking-[0.15em] text-white uppercase"
-                            >
-                                {phases[phaseIndex]?.text || "SYSTEM INITIALIZED"}
-                            </motion.span>
-                        </AnimatePresence>
-                        <span className="font-mono text-[24px] font-bold tracking-widest">{Math.round(progress)}%</span>
+                {/* PROGRESS SECTION */}
+                <div className="w-full flex flex-col gap-8">
+                    <div className="flex justify-between items-end">
+                        <div className="flex flex-col gap-2">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={phaseIndex}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 10 }}
+                                    className="flex flex-col items-start"
+                                >
+                                    <span className="text-[14px] font-mono font-black tracking-[0.3em] text-white uppercase mb-1">
+                                        {phases[phaseIndex].text}
+                                    </span>
+                                    <span className="text-[11px] font-mono text-white/40 tracking-[0.1em] uppercase">
+                                        {phases[phaseIndex].sub}
+                                    </span>
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                        <div className="flex flex-col items-end">
+                            <span className="text-3xl font-mono font-black text-white">{Math.round(progress)}%</span>
+                            <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#00FF41] uppercase">Unlimited Updates Active</span>
+                        </div>
                     </div>
 
-                    {/* Heavy Bar Container */}
-                    <div className="relative h-[24px] w-full bg-[#0A0A0A] border-2 border-white/30 flex items-center p-[2px]">
-
-                        {/* The Fill - Solid Block */}
+                    {/* HEAVY PROGRESS BAR */}
+                    <div className="relative h-[12px] w-full bg-white/5 border border-white/10 p-[2px] overflow-hidden">
                         <motion.div
-                            className="h-full bg-white relative"
+                            className="h-full bg-white relative shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
                             transition={{ ease: "linear", duration: 0.1 }}
-                        >
-                            {/* Leading Edge Glare */}
-                            <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-black" />
-                        </motion.div>
+                        />
 
-                        {/* Tactical Markers on Top/Bottom */}
-                        <div className="absolute top-[-6px] left-0 w-2 h-[2px] bg-white" />
-                        <div className="absolute top-[-6px] right-0 w-2 h-[2px] bg-white" />
-                        <div className="absolute bottom-[-6px] left-0 w-2 h-[2px] bg-white" />
-                        <div className="absolute bottom-[-6px] right-0 w-2 h-[2px] bg-white" />
-
-                        {/* Center Marker */}
-                        <div className="absolute top-[-4px] left-1/2 w-[2px] h-[4px] bg-white/50" />
-                        <div className="absolute bottom-[-4px] left-1/2 w-[2px] h-[4px] bg-white/50" />
+                        {/* Scanline pattern over bar */}
+                        <div className="absolute inset-0 opacity-20 pointer-events-none"
+                            style={{ backgroundImage: 'linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.5) 50%)', backgroundSize: '4px 100%' }}
+                        />
                     </div>
 
-                </motion.div>
-
-            </div>
-
-            {/* DECORATIVE ELEMENTS (Clean, minimal, high-tech) */}
-            <div className="absolute bottom-12 left-0 right-0 flex justify-center opacity-30">
-                <div className="flex gap-2">
-                    {[...Array(3)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            animate={{ opacity: [0.2, 1, 0.2] }}
-                            transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity }}
-                            className="w-1.5 h-1.5 rounded-full bg-white"
-                        />
-                    ))}
+                    {/* BOTTOM DECORATIVE HUD */}
+                    <div className="flex justify-center items-center gap-12 pt-8 opacity-20">
+                        <div className="flex items-center gap-2">
+                            <Cpu size={14} />
+                            <span className="text-[10px] font-mono tracking-widest uppercase">Encryption Engaged</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Binary size={14} />
+                            <span className="text-[10px] font-mono tracking-widest uppercase">Syncing Registry</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Network size={14} />
+                            <span className="text-[10px] font-mono tracking-widest uppercase">Grid Authorized</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <style>{`
-                .glow-text {
-                    text-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
-                }
-            `}</style>
+            {/* RADIAL SCAN ANIMATION */}
+            <motion.div
+                animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.2, 0.1] }}
+                transition={{ duration: 4, repeat: Infinity }}
+                className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] pointer-events-none"
+            />
         </div>
     )
 }
