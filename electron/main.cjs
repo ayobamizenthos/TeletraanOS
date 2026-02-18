@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
+const { exec } = require('child_process');
+const os = require('os');
 const { autoUpdater } = require('electron-updater');
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -126,15 +128,43 @@ function createWindow() {
     });
     ipcMain.on('window-close', () => mainWindow.close());
 
-    // SYSTEM LOGIC: Network & Stats
-    let isOffline = false;
+    // SYSTEM LOGIC: Real Telemetry (Battery & Network)
     let batteryLevel = 100;
+    let isConnected = true;
     const startTime = Date.now();
 
+    // Function to get real battery level via WMIC
+    function updateBatteryLevel() {
+        exec('WMIC Path Win32_Battery Get EstimatedChargeRemaining', (err, stdout) => {
+            if (!err) {
+                const match = stdout.match(/\d+/);
+                if (match) {
+                    batteryLevel = parseInt(match[0]);
+                }
+            }
+        });
+    }
+
+    // Function to check real network status
+    function updateNetworkStatus() {
+        const interfaces = os.networkInterfaces();
+        let found = false;
+        for (const name of Object.keys(interfaces)) {
+            for (const iface of interfaces[name]) {
+                if (iface.family === 'IPv4' && !iface.internal) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+        isConnected = found;
+    }
+
     ipcMain.on('toggle-network', () => {
-        isOffline = !isOffline;
-        console.log(`[System] Network status: ${isOffline ? 'OFFLINE' : 'ONLINE'}`);
-        // Immediate broadcast of new state
+        console.log('[System] Force Resync Triggered');
+        updateBatteryLevel();
+        updateNetworkStatus();
         broadcastStats();
     });
 
@@ -143,21 +173,23 @@ function createWindow() {
 
         const stats = {
             battery: batteryLevel,
-            net: isOffline ? 0 : 1, // 0 = Offline, 1 = Connected
+            net: isConnected ? 1 : 0, // 1 = Connected, 0 = Offline
             uptime: Math.floor((Date.now() - startTime) / 1000)
         };
 
         mainWindow.webContents.send('system-stats', stats);
     }
 
-    // Emit stats every 2 seconds
+    // Initial check
+    updateBatteryLevel();
+    updateNetworkStatus();
+
+    // Periodic Update (every 5 seconds for real sync)
     const statsInterval = setInterval(() => {
-        // Subtle battery drain simulation
-        if (batteryLevel > 1) {
-            batteryLevel -= Math.random() * 0.05;
-        }
+        updateBatteryLevel();
+        updateNetworkStatus();
         broadcastStats();
-    }, 2000);
+    }, 5000);
 
     mainWindow.on('closed', () => {
         clearInterval(statsInterval);
