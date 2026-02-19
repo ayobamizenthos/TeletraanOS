@@ -118,9 +118,48 @@ const Login = ({ onLogin }) => {
 
                             {/* CONNECTING LINES - SVG - Centered */}
                             <svg className="absolute top-[-220px] left-1/2 transform -translate-x-1/2 w-[580px] h-[400px] pointer-events-none z-0 overflow-visible">
-                                <path d="M 90,0 V 130 L 180,240 V 270" fill="none" stroke="#555" strokeWidth="1" strokeDasharray="6 6" className="opacity-50" />
-                                <path d="M 490,0 V 130 L 400,240 V 270" fill="none" stroke="#555" strokeWidth="1" strokeDasharray="6 6" className="opacity-50" />
-                                <path d="M 290,90 V 220" fill="none" stroke="#555" strokeWidth="1" strokeDasharray="6 6" className="opacity-50" />
+                                <defs>
+                                    <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" floodOpacity="0.5" />
+                                        <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="white" floodOpacity="0.3" />
+                                    </filter>
+                                </defs>
+
+                                {/* Left Line */}
+                                <motion.path
+                                    d="M 90,15 V 140 L 175,220 V 285"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    style={{ filter: 'url(#line-glow)' }}
+                                    initial={{ pathLength: 0, opacity: 0 }}
+                                    animate={{ pathLength: 1, opacity: 0.8 }}
+                                    transition={{ duration: 1.2, delay: 0.5, ease: "easeInOut" }}
+                                />
+
+                                {/* Right Line */}
+                                <motion.path
+                                    d="M 490,15 V 140 L 405,220 V 285"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    style={{ filter: 'url(#line-glow)' }}
+                                    initial={{ pathLength: 0, opacity: 0 }}
+                                    animate={{ pathLength: 1, opacity: 0.8 }}
+                                    transition={{ duration: 1.2, delay: 0.7, ease: "easeInOut" }}
+                                />
+
+                                {/* Center Line */}
+                                <motion.path
+                                    d="M 290,105 V 230"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    style={{ filter: 'url(#line-glow)' }}
+                                    initial={{ pathLength: 0, opacity: 0 }}
+                                    animate={{ pathLength: 1, opacity: 0.8 }}
+                                    transition={{ duration: 1.2, delay: 0.9, ease: "easeInOut" }}
+                                />
                             </svg>
 
                             {/* LABELS */}
