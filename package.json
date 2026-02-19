@@ -49,7 +49,7 @@
   },
   "build": {
     "appId": "com.teletraanos.app",
-    "productName": "Teletraan Pro v1.0.0",
+    "productName": "Teletraan Pro v1.0",
     "directories": {
       "output": "dist_electron"
     },
