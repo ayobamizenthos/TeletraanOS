@@ -105,16 +105,20 @@ const Login = ({ onLogin }) => {
                                 ))}
                             </div>
 
-                            {/* Center Button with TELETRAAN LOGO (STATIC) */}
-                            <div className="absolute z-20 w-[100px] h-[100px] bg-[#161616] rounded-[24px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-visible">
+                            {/* Center Button with TELETRAAN LOGO (Animated Entrance) */}
+                            <motion.div
+                                className="absolute z-20 w-[100px] h-[100px] bg-[#161616] rounded-[24px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-visible"
+                                initial={{ x: 400, y: 400, opacity: 0, scale: 0.5 }}
+                                animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                                transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                            >
                                 <motion.img
                                     layoutId="teletraan-hero-logo"
-                                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                                     src={teletraanLogo}
                                     className="w-[64px] h-[64px] opacity-90 object-contain"
                                     alt="Teletraan"
                                 />
-                            </div>
+                            </motion.div>
 
                             {/* CONNECTING LINES - SVG - Centered */}
                             {/* CONNECTING LINES - LASER BEAMS */}
