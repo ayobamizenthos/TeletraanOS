@@ -169,7 +169,7 @@ const Login = ({ onLogin }) => {
                                     y="90"
                                     width="2"
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 155, opacity: 1 }}
+                                    animate={{ height: 135, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
                                     fill="url(#beam-gradient)"
                                     style={{ filter: 'url(#laser-glow)' }}
