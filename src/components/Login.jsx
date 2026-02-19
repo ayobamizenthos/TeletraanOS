@@ -165,7 +165,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Center Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 290,60 V 205"
+                                    d="M 292,60 V 205"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2"
