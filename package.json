@@ -75,7 +75,8 @@
       "target": "dmg",
       "icon": "build/icon.png",
       "category": "public.app-category.utilities",
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "artifactName": "Teletraan-OS-Setup-${version}.dmg"
     },
     "linux": {
       "target": "AppImage",
