@@ -126,6 +126,20 @@ const Login = ({ onLogin }) => {
                             {/* LABELS */}
                             {/* Left Label - Aligned with x=-200px line start */}
                             <div className="absolute top-[-250px] left-[calc(50%-200px)] transform -translate-x-1/2">
+                                <div className="relative min-w-[220px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+                                    <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
+                                    <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
+                                    <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
+                                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50" />
+                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
+                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
+                                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
+                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">Maximum Protection</span>
+                                </div>
+                            </div>
+
+                            {/* Center Label - Aligned with x=0px line start */}
+                            <div className="absolute top-[-160px] left-1/2 transform -translate-x-1/2">
                                 <div className="relative min-w-[180px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
@@ -134,27 +148,13 @@ const Login = ({ onLogin }) => {
                                     <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
                                     <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
-                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10">Maximum Protection</span>
-                                </div>
-                            </div>
-
-                            {/* Center Label - Aligned with x=0px line start */}
-                            <div className="absolute top-[-160px] left-1/2 transform -translate-x-1/2">
-                                <div className="relative min-w-[160px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
-                                    <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
-                                    <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
-                                    <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
-                                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50" />
-                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
-                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
-                                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
-                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10">Access Control</span>
+                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">Access Control</span>
                                 </div>
                             </div>
 
                             {/* Right Label - Aligned with x=+200px line start */}
                             <div className="absolute top-[-250px] left-[calc(50%+200px)] transform -translate-x-1/2">
-                                <div className="relative min-w-[200px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+                                <div className="relative min-w-[240px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
@@ -162,7 +162,7 @@ const Login = ({ onLogin }) => {
                                     <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
                                     <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
-                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10">AI-Powered Surveillance</span>
+                                    <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">AI-Powered Surveillance</span>
                                 </div>
                             </div>
 
