@@ -137,7 +137,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Left Line */}
                                 <motion.path
-                                    d="M 90,0 V 130 L 190,240 V 242"
+                                    d="M 90,0 V 130 L 190,240 V 245"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2.5"
@@ -151,7 +151,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Right Line */}
                                 <motion.path
-                                    d="M 490,0 V 130 L 390,240 V 242"
+                                    d="M 490,0 V 130 L 390,240 V 245"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2.5"
@@ -163,13 +163,13 @@ const Login = ({ onLogin }) => {
                                     transition={{ duration: 1.5, delay: 0.7, ease: "circOut" }}
                                 />
 
-                                {/* Middle Line: ACCESS CONTROL (Using Rect for guaranteed visibility) */}
+                                {/* Middle Line: ACCESS CONTROL */}
                                 <motion.rect
                                     x="289"
-                                    y="55"
+                                    y="0"
                                     width="2"
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 125, opacity: 1 }}
+                                    animate={{ height: 215, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
                                     fill="url(#beam-gradient)"
                                     style={{ filter: 'url(#laser-glow)' }}
