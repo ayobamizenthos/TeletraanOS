@@ -137,7 +137,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Left Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 90,0 V 130 L 190,240 V 300"
+                                    d="M 90,0 V 130 L 190,240 V 255"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2"
@@ -151,7 +151,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Right Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 490,0 V 130 L 390,240 V 300"
+                                    d="M 490,0 V 130 L 390,240 V 255"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2"
@@ -165,7 +165,7 @@ const Login = ({ onLogin }) => {
 
                                 {/* Center Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 290,90 V 260"
+                                    d="M 290,90 V 205"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
                                     strokeWidth="2"
