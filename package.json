@@ -9,7 +9,11 @@
     "start": "concurrently \"vite\" \"wait-on tcp:5173 && cross-env NODE_ENV=development electron .\"",
     "build": "vite build",
     "package": "vite build && electron-builder",
-    "publish": "vite build && cross-env ELECTRON_BUILDER_CACHE=C:\\electron-cache electron-builder --publish always",
+    "publish": "vite build && electron-builder --publish always",
+    "package:win": "vite build && electron-builder --win",
+    "package:mac": "vite build && electron-builder --mac",
+    "package:linux": "vite build && electron-builder --linux",
+    "package:all": "vite build && electron-builder --win --mac --linux",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -66,6 +70,17 @@
       "target": "nsis",
       "icon": "build/icon.png",
       "signAndEditExecutable": false
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png",
+      "category": "public.app-category.utilities",
+      "darkModeSupport": true
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png",
+      "category": "Utility"
     },
     "nsis": {
       "oneClick": true,

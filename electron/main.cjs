@@ -134,16 +134,39 @@ function createWindow() {
     let manualOffline = false; // Manual Kill Switch
     const startTime = Date.now();
 
-    // Function to get real battery level via WMIC
+    // Function to get real battery level (cross-platform)
     function updateBatteryLevel() {
-        exec('WMIC Path Win32_Battery Get EstimatedChargeRemaining', (err, stdout) => {
-            if (!err) {
-                const match = stdout.match(/\d+/);
-                if (match) {
-                    batteryLevel = parseInt(match[0]);
+        if (process.platform === 'win32') {
+            // Windows: use WMIC
+            exec('WMIC Path Win32_Battery Get EstimatedChargeRemaining', (err, stdout) => {
+                if (!err) {
+                    const match = stdout.match(/\d+/);
+                    if (match) {
+                        batteryLevel = parseInt(match[0]);
+                    }
                 }
-            }
-        });
+            });
+        } else if (process.platform === 'darwin') {
+            // macOS: use pmset
+            exec('pmset -g batt', (err, stdout) => {
+                if (!err) {
+                    const match = stdout.match(/(\d+)%/);
+                    if (match) {
+                        batteryLevel = parseInt(match[1]);
+                    }
+                }
+            });
+        } else {
+            // Linux: read from sysfs
+            exec('cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || cat /sys/class/power_supply/BAT1/capacity 2>/dev/null', (err, stdout) => {
+                if (!err && stdout.trim()) {
+                    const match = stdout.trim().match(/\d+/);
+                    if (match) {
+                        batteryLevel = parseInt(match[0]);
+                    }
+                }
+            });
+        }
     }
 
     // Function to check real network status
