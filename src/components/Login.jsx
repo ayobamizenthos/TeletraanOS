@@ -130,9 +130,8 @@ const Login = ({ onLogin }) => {
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
+                                    {/* Corners: Top-Left & Bottom-Right Only */}
                                     <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50" />
-                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
-                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
                                     <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">Maximum Protection</span>
                                 </div>
@@ -144,9 +143,8 @@ const Login = ({ onLogin }) => {
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
+                                    {/* Corners: Top-Left & Bottom-Right Only */}
                                     <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50" />
-                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
-                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
                                     <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">Access Control</span>
                                 </div>
@@ -158,9 +156,8 @@ const Login = ({ onLogin }) => {
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
+                                    {/* Corners: Top-Left & Bottom-Right Only */}
                                     <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/50" />
-                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/50" />
-                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/50" />
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/50" />
                                     <span className="text-[12px] font-bold font-mono text-white tracking-[0.2em] uppercase relative z-10 whitespace-nowrap">AI-Powered Surveillance</span>
                                 </div>
