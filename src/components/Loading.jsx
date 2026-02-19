@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import teletraanLogo from '../assets/teletraan.svg'
 import dmIcon from '../assets/dm.svg'
 
@@ -146,7 +146,7 @@ const Loading = ({ onComplete }) => {
                 <div className="w-full max-w-sm flex flex-col items-center">
 
                     {/* BORDERLESS LOADING BAR ASSEMBLY */}
-                    <div className="relative w-full flex items-center">
+                    <div className="relative w-full flex items-center mb-10">
                         {/* The Loading Line */}
                         <div className="relative w-full h-[4px] bg-white/[0.05] rounded-full">
                             {/* Static Track Glow */}
@@ -178,6 +178,22 @@ const Loading = ({ onComplete }) => {
                                 />
                             </motion.div>
                         </div>
+                    </div>
+
+                    {/* DYNAMIC STATUS TEXTS */}
+                    <div className="h-8 flex items-center justify-center">
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={progress < 33 ? 'm1' : progress < 66 ? 'm2' : 'm3'}
+                                initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
+                                animate={{ opacity: 0.6, y: 0, filter: 'blur(0px)' }}
+                                exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                className="text-[12px] font-mono text-white tracking-[0.4em] uppercase whitespace-nowrap"
+                            >
+                                {progress < 33 ? 'Smart Monitoring' : progress < 66 ? 'Uncompromised Security' : 'Seamless Integration'}
+                            </motion.span>
+                        </AnimatePresence>
                     </div>
 
                 </div>
