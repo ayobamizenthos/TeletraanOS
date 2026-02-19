@@ -118,16 +118,17 @@ const Login = ({ onLogin }) => {
 
                             {/* CONNECTING LINES - SVG - Centered */}
                             {/* CONNECTING LINES - LASER BEAMS */}
-                            <svg className="absolute top-[-215px] left-1/2 transform -translate-x-1/2 w-[580px] h-[400px] pointer-events-none z-0 overflow-visible">
+                            {/* CONNECTING LINES - LASER BEAMS */}
+                            <svg className="absolute top-[-280px] left-1/2 transform -translate-x-1/2 w-[580px] h-[450px] pointer-events-none z-0 overflow-visible">
                                 <defs>
-                                    <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
-                                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
-                                        <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0.6" />
+                                    <linearGradient id="laser-beam-gradient" x1="0" y1="0" x2="0" y2="450" gradientUnits="userSpaceOnUse">
+                                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                                        <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0.5" />
                                         <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.2" />
                                     </linearGradient>
-                                    <filter id="laser-glow" x="-50%" y="-50%" width="200%" height="200%">
-                                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
-                                        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.6 0" result="glow" />
+                                    <filter id="laser-glow-new" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                                        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.8 0" result="glow" />
                                         <feMerge>
                                             <feMergeNode in="glow" />
                                             <feMergeNode in="SourceGraphic" />
@@ -137,13 +138,13 @@ const Login = ({ onLogin }) => {
 
                                 {/* Left Line */}
                                 <motion.path
-                                    d="M 90,0 V 130 L 190,240 V 255"
+                                    d="M 90,0 V 160 L 190,280 V 315"
                                     fill="none"
-                                    stroke="url(#beam-gradient)"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="square"
-                                    strokeLinejoin="miter"
-                                    style={{ filter: 'url(#laser-glow)' }}
+                                    stroke="url(#laser-beam-gradient)"
+                                    strokeWidth="3.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    style={{ filter: 'url(#laser-glow-new)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
@@ -151,13 +152,13 @@ const Login = ({ onLogin }) => {
 
                                 {/* Right Line */}
                                 <motion.path
-                                    d="M 490,0 V 130 L 390,240 V 255"
+                                    d="M 490,0 V 160 L 390,280 V 315"
                                     fill="none"
-                                    stroke="url(#beam-gradient)"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="square"
-                                    strokeLinejoin="miter"
-                                    style={{ filter: 'url(#laser-glow)' }}
+                                    stroke="url(#laser-beam-gradient)"
+                                    strokeWidth="3.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    style={{ filter: 'url(#laser-glow-new)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.7, ease: "circOut" }}
@@ -165,12 +166,12 @@ const Login = ({ onLogin }) => {
 
                                 {/* Middle Line: ACCESS CONTROL */}
                                 <motion.path
-                                    d="M 290,55 V 195"
+                                    d="M 290,70 V 230"
                                     fill="none"
-                                    stroke="url(#beam-gradient)"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="square"
-                                    style={{ filter: 'url(#laser-glow)' }}
+                                    stroke="url(#laser-beam-gradient)"
+                                    strokeWidth="3.5"
+                                    strokeLinecap="round"
+                                    style={{ filter: 'url(#laser-glow-new)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
@@ -179,7 +180,7 @@ const Login = ({ onLogin }) => {
 
                             {/* LABELS */}
                             {/* Left Label - Aligned with x=-200px line start */}
-                            <div className="absolute top-[-250px] left-[calc(50%-200px)] transform -translate-x-1/2">
+                            <div className="absolute top-[-330px] left-[calc(50%-200px)] transform -translate-x-1/2">
                                 <div className="relative min-w-[220px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
@@ -192,7 +193,7 @@ const Login = ({ onLogin }) => {
                             </div>
 
                             {/* Center Label - Aligned with x=0px line start */}
-                            <div className="absolute top-[-160px] left-1/2 transform -translate-x-1/2">
+                            <div className="absolute top-[-240px] left-1/2 transform -translate-x-1/2">
                                 <div className="relative min-w-[180px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
@@ -205,7 +206,7 @@ const Login = ({ onLogin }) => {
                             </div>
 
                             {/* Right Label - Aligned with x=+200px line start */}
-                            <div className="absolute top-[-250px] left-[calc(50%+200px)] transform -translate-x-1/2">
+                            <div className="absolute top-[-330px] left-[calc(50%+200px)] transform -translate-x-1/2">
                                 <div className="relative min-w-[240px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
@@ -221,7 +222,7 @@ const Login = ({ onLogin }) => {
                     </div>
                     {/* Footer Text - Impressively Positioned */}
                     <div className="absolute bottom-24 left-0 right-0 text-center pointer-events-none">
-                        <span className="text-[32px] font-sans font-black text-white tracking-[0.2em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">The Future of AI-Powered Security</span>
+                        <span className="text-[14px] font-sans font-black text-white tracking-[0.5em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">The Future of AI-Powered Security</span>
                     </div>
 
                 </div>
