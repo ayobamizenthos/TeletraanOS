@@ -166,10 +166,10 @@ const Login = ({ onLogin }) => {
                                 {/* Middle Line: ACCESS CONTROL */}
                                 <motion.rect
                                     x="289"
-                                    y="0"
+                                    y="90"
                                     width="2"
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 215, opacity: 1 }}
+                                    animate={{ height: 110, opacity: 1 }}
                                     transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
                                     fill="url(#beam-gradient)"
                                     style={{ filter: 'url(#laser-glow)' }}
