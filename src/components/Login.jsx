@@ -56,7 +56,7 @@ const Login = ({ onLogin }) => {
                             <motion.div
                                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
                                 animate={{ rotate: 360 }}
-                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                transition={{ duration: 20, repeat: Infinity, ease: "linear", delay: 1.8 }}
                             >
                                 {/* Inner Letter Track (The Rolling Grey Shape) */}
                                 <div className="absolute inset-[46px] rounded-full bg-[#050505] shadow-[inset_0_12px_24px_rgba(0,0,0,1),0_1px_0_rgba(255,255,255,0.05)] overflow-hidden flex items-center justify-center">
