@@ -22,45 +22,41 @@ const Login = ({ onLogin }) => {
         }, 800);
     };
 
-    // Component for the "Grids" (Tactical Labels)
-    const DiagramGridNode = ({ icon, text, delay = 0 }) => (
+    // New "Image-Exact" Grid Node - No icons, just bold text in a HUD box
+    const DiagramGridNode = ({ text, delay = 0, align = "center", width = "auto" }) => (
         <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3 relative"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay, duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center gap-0 relative"
+            style={{ width: width === "auto" ? "auto" : width }}
         >
-            {/* HUD Container */}
-            <div className="relative bg-[#1A1A1A]/80 backdrop-blur-md px-6 py-4 border border-white/5 shadow-2xl flex items-center gap-4 group overflow-hidden">
-                {/* Tactical Corners */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/40 group-hover:border-[#00FF41] transition-colors" />
-                <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/40 group-hover:border-[#00FF41] transition-colors" />
-                <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/40 group-hover:border-[#00FF41] transition-colors" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/40 group-hover:border-[#00FF41] transition-colors" />
+            {/* The Main HUD Box */}
+            <div className="relative w-full bg-[#080808] px-6 py-3 border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-hidden">
 
-                {/* Subtle Grid Background */}
-                <div className="absolute inset-0 opacity-5 pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '8px 8px' }}
+                {/* 1. Internal Grid Texture */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none"
+                    style={{
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
+                        backgroundSize: '12px 12px'
+                    }}
                 />
 
-                {/* Icon Assembly */}
-                <div className="relative w-10 h-10 flex items-center justify-center bg-white/5 rounded-sm border border-white/10 group-hover:border-[#00FF41]/30 transition-all">
-                    <img src={icon} className="w-6 h-6 filter invert brightness-[2] drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" alt="Icon" />
-                    <motion.div
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-white/5 rounded-full"
-                    />
-                </div>
+                {/* 2. Top/Bottom Gradient Fades (Glass Effect) */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
+                <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
 
-                {/* Text */}
-                <span className="text-[13px] text-white/90 font-mono font-bold tracking-[0.15em] uppercase whitespace-nowrap drop-shadow-sm select-none">
+                {/* 3. Corner Brackets (Grey/White) */}
+                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/40" />
+                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/40" />
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/40" />
+
+                {/* 4. Text Content */}
+                <span className="relative z-10 text-[11px] text-white font-mono font-bold tracking-[0.1em] uppercase whitespace-nowrap drop-shadow-md">
                     {text}
                 </span>
             </div>
-
-            {/* Status Pulse */}
-            <div className="w-1.5 h-1.5 bg-[#00FF41] rounded-full shadow-[0_0_10px_#00FF41] animate-pulse" />
         </motion.div>
     );
 
@@ -79,7 +75,9 @@ const Login = ({ onLogin }) => {
 
             {/* Background Atmosphere */}
             <div className="absolute inset-0 bg-black z-0" />
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,#222_0%,transparent_70%)] pointer-events-none" />
+
+            {/* Subtle Vignette & Grain */}
+            <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)]" />
 
             <div className="w-full max-w-[1400px] h-[800px] flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10 px-10 lg:px-20">
 
@@ -92,13 +90,14 @@ const Login = ({ onLogin }) => {
                     <div className="relative w-full h-full flex items-center justify-center scale-[0.85] origin-top">
 
                         {/* CENTRAL HUB - THE DIAL */}
-                        <div className="relative w-[360px] h-[360px] rounded-full bg-[#080808] shadow-[0_40px_80px_rgba(0,0,0,1),inset_0_0_40px_rgba(255,255,255,0.02)] flex items-center justify-center mt-10">
+                        {/* Lowered closer to bottom to match image proportions */}
+                        <div className="absolute bottom-[80px] w-[380px] h-[380px] rounded-full bg-[#080808] shadow-[0_40px_80px_rgba(0,0,0,1)] flex items-center justify-center z-10">
 
                             {/* Outer Glow Ring */}
                             <div className="absolute inset-[-2px] rounded-full bg-gradient-to-tr from-white/10 to-transparent opacity-50 blur-[1px]" />
                             <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#1a1a1a] to-[#050505] shadow-[inset_0_2px_4px_rgba(255,255,255,0.05)]" />
 
-                            {/* ROTATING RING BACKGROUND - CINEMATIC ROLL */}
+                            {/* ROTATING RING BACKGROUND */}
                             <motion.div
                                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
                                 animate={{ rotate: 360 }}
@@ -121,7 +120,7 @@ const Login = ({ onLogin }) => {
                                     { char: 'A', deg: 36 }, { char: 'A', deg: 54 }, { char: 'N', deg: 72 }
                                 ].map((item, i) => (
                                     <span key={i} className="absolute text-[32px] font-sans text-white font-black tracking-widest drop-shadow-[0_4px_8px_rgba(0,0,0,1)]"
-                                        style={{ transform: `rotate(${item.deg}deg) translateY(-112px)` }}>
+                                        style={{ transform: `rotate(${item.deg}deg) translateY(-118px)` }}>
                                         {item.char}
                                     </span>
                                 ))}
@@ -138,62 +137,89 @@ const Login = ({ onLogin }) => {
                                 />
                             </div>
 
-                            {/* SHARP CONNECTING LINES (SVG MOTION PATHS) */}
-                            <svg className="absolute top-[-260px] left-1/2 transform -translate-x-1/2 w-[700px] h-[500px] pointer-events-none z-0 overflow-visible">
-                                {/* Left Line */}
-                                <motion.path
-                                    d="M 120,40 V 160 L 220,280 V 320"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.4 }}
-                                    transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
-                                />
-                                {/* Right Line */}
-                                <motion.path
-                                    d="M 580,40 V 160 L 480,280 V 320"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.4 }}
-                                    transition={{ duration: 1.5, delay: 0.7, ease: "easeInOut" }}
-                                />
-                                {/* Center Line */}
-                                <motion.path
-                                    d="M 350,140 V 260"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.4 }}
-                                    transition={{ duration: 1, delay: 0.9, ease: "easeInOut" }}
-                                />
-                            </svg>
-
-                            {/* TACTICAL GRIDS (THE LABELS) */}
-                            {/* Left (Smart Analysis) */}
-                            <div className="absolute top-[-300px] left-[calc(50%-230px)] transform -translate-x-1/2">
-                                <DiagramGridNode icon={saIcon} text="Maximum Protection" delay={1.2} />
-                            </div>
-
-                            {/* Center (Device Management) */}
-                            <div className="absolute top-[-220px] left-1/2 transform -translate-x-1/2">
-                                <DiagramGridNode icon={dmIcon} text="Access Control" delay={1.4} />
-                            </div>
-
-                            {/* Right (Risk Factor) */}
-                            <div className="absolute top-[-300px] left-[calc(50%+230px)] transform -translate-x-1/2">
-                                <DiagramGridNode icon={rfIcon} text="AI-Powered Surveillance" delay={1.6} />
-                            </div>
-
                         </div>
+
+                        {/* NEW SHARP CONNECTING LINES (SVG MATCHING IMAGE) */}
+                        {/* 
+                           Coordinates Logic (approx 700x600 viewBox):
+                           Center X = 350
+                           Dial Top Y = ~350 (Since dial is bottom aligned)
+                           
+                           Left Box Bottom: x=120, y=100
+                           Right Box Bottom: x=580, y=100
+                           Center Box Bottom: x=350, y=200
+                        */}
+                        <svg className="absolute w-full h-full pointer-events-none z-0 overflow-visible" viewBox="0 0 700 800">
+                            <defs>
+                                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="2" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.8" />
+                                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.1" />
+                                </linearGradient>
+                            </defs>
+
+                            {/* Left Line: Down -> Diagonal In -> Down */}
+                            <motion.path
+                                d="M 175,180 V 320 L 280,450 V 500"
+                                fill="none"
+                                stroke="url(#line-gradient)"
+                                strokeWidth="2"
+                                filter="url(#glow)"
+                                initial={{ pathLength: 0, opacity: 0 }}
+                                animate={{ pathLength: 1, opacity: 0.6 }}
+                                transition={{ duration: 1.5, delay: 0.5, ease: "easeInOut" }}
+                            />
+
+                            {/* Right Line: Down -> Diagonal In -> Down */}
+                            <motion.path
+                                d="M 525,180 V 320 L 420,450 V 500"
+                                fill="none"
+                                stroke="url(#line-gradient)"
+                                strokeWidth="2"
+                                filter="url(#glow)"
+                                initial={{ pathLength: 0, opacity: 0 }}
+                                animate={{ pathLength: 1, opacity: 0.6 }}
+                                transition={{ duration: 1.5, delay: 0.7, ease: "easeInOut" }}
+                            />
+
+                            {/* Center Line: Straight Down */}
+                            <motion.path
+                                d="M 350,300 V 460"
+                                fill="none"
+                                stroke="url(#line-gradient)"
+                                strokeWidth="2"
+                                filter="url(#glow)"
+                                initial={{ pathLength: 0, opacity: 0 }}
+                                animate={{ pathLength: 1, opacity: 0.6 }}
+                                transition={{ duration: 1.2, delay: 0.9, ease: "easeInOut" }}
+                            />
+                        </svg>
+
+                        {/* TACTICAL GRIDS (THE LABELS) - POSITIONED TO MATCH LINES */}
+
+                        {/* Left (Maximum Protection) - Higher up */}
+                        <div className="absolute top-[135px] left-[175px] transform -translate-x-1/2">
+                            <DiagramGridNode text="MAXIMUM PROTECTION" delay={1.2} width="220px" />
+                        </div>
+
+                        {/* Center (Access Control) - Middle */}
+                        <div className="absolute top-[255px] left-[350px] transform -translate-x-1/2">
+                            <DiagramGridNode text="ACCESS CONTROL" delay={1.4} width="200px" />
+                        </div>
+
+                        {/* Right (AI Surveillance) - Higher up */}
+                        <div className="absolute top-[135px] right-[75px] transform -translate-x-1/2">
+                            <DiagramGridNode text="AI SURVEILLANCE" delay={1.6} width="220px" />
+                        </div>
+
                     </div>
 
                     {/* Footer Text */}
-                    <div className="absolute bottom-24 left-0 right-0 text-center pointer-events-none">
-                        <span className="text-[14px] font-bold text-white/40 tracking-[0.4em] uppercase">Sovereign Authority Established</span>
+                    <div className="absolute bottom-16 left-0 right-0 text-center pointer-events-none">
+                        <span className="text-[12px] font-mono font-bold text-white/30 tracking-[0.4em] uppercase">Security Protocol v9.2</span>
                     </div>
 
                 </div>
