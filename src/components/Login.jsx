@@ -117,48 +117,63 @@ const Login = ({ onLogin }) => {
                             </div>
 
                             {/* CONNECTING LINES - SVG - Centered */}
-                            <svg className="absolute top-[-220px] left-1/2 transform -translate-x-1/2 w-[580px] h-[400px] pointer-events-none z-0 overflow-visible">
+                            {/* CONNECTING LINES - LASER BEAMS */}
+                            <svg className="absolute top-[-215px] left-1/2 transform -translate-x-1/2 w-[580px] h-[400px] pointer-events-none z-0 overflow-visible">
                                 <defs>
-                                    <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%">
-                                        <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" floodOpacity="0.5" />
-                                        <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="white" floodOpacity="0.3" />
+                                    <linearGradient id="beam-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
+                                        <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.5" />
+                                        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.1" />
+                                    </linearGradient>
+                                    <filter id="laser-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                                        <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.6 0" result="glow" />
+                                        <feMerge>
+                                            <feMergeNode in="glow" />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
                                     </filter>
                                 </defs>
 
-                                {/* Left Line */}
+                                {/* Left Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 90,15 V 140 L 175,220 V 285"
+                                    d="M 90,0 V 130 L 190,240 V 300"
                                     fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    style={{ filter: 'url(#line-glow)' }}
+                                    stroke="url(#beam-gradient)"
+                                    strokeWidth="2"
+                                    strokeLinecap="square"
+                                    strokeLinejoin="miter"
+                                    style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.8 }}
-                                    transition={{ duration: 1.2, delay: 0.5, ease: "easeInOut" }}
+                                    animate={{ pathLength: 1, opacity: 1 }}
+                                    transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
                                 />
 
-                                {/* Right Line */}
+                                {/* Right Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 490,15 V 140 L 405,220 V 285"
+                                    d="M 490,0 V 130 L 390,240 V 300"
                                     fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    style={{ filter: 'url(#line-glow)' }}
+                                    stroke="url(#beam-gradient)"
+                                    strokeWidth="2"
+                                    strokeLinecap="square"
+                                    strokeLinejoin="miter"
+                                    style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.8 }}
-                                    transition={{ duration: 1.2, delay: 0.7, ease: "easeInOut" }}
+                                    animate={{ pathLength: 1, opacity: 1 }}
+                                    transition={{ duration: 1.5, delay: 0.7, ease: "circOut" }}
                                 />
 
-                                {/* Center Line */}
+                                {/* Center Line: High-Tech Path with Glow & Gradient */}
                                 <motion.path
-                                    d="M 290,105 V 230"
+                                    d="M 290,90 V 260"
                                     fill="none"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    style={{ filter: 'url(#line-glow)' }}
+                                    stroke="url(#beam-gradient)"
+                                    strokeWidth="2"
+                                    strokeLinecap="square"
+                                    style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.8 }}
-                                    transition={{ duration: 1.2, delay: 0.9, ease: "easeInOut" }}
+                                    animate={{ pathLength: 1, opacity: 1 }}
+                                    transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
                                 />
                             </svg>
 
