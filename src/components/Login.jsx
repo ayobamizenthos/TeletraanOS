@@ -120,10 +120,10 @@ const Login = ({ onLogin }) => {
                             {/* CONNECTING LINES - LASER BEAMS */}
                             <svg className="absolute top-[-215px] left-1/2 transform -translate-x-1/2 w-[580px] h-[400px] pointer-events-none z-0 overflow-visible">
                                 <defs>
-                                    <linearGradient id="beam-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <linearGradient id="beam-gradient" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
                                         <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
-                                        <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.5" />
-                                        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.1" />
+                                        <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0.6" />
+                                        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.2" />
                                     </linearGradient>
                                     <filter id="laser-glow" x="-50%" y="-50%" width="200%" height="200%">
                                         <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
@@ -135,12 +135,12 @@ const Login = ({ onLogin }) => {
                                     </filter>
                                 </defs>
 
-                                {/* Left Line: High-Tech Path with Glow & Gradient */}
+                                {/* Left Line */}
                                 <motion.path
                                     d="M 90,0 V 130 L 190,240 V 255"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
-                                    strokeWidth="2"
+                                    strokeWidth="2.5"
                                     strokeLinecap="square"
                                     strokeLinejoin="miter"
                                     style={{ filter: 'url(#laser-glow)' }}
@@ -149,12 +149,12 @@ const Login = ({ onLogin }) => {
                                     transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
                                 />
 
-                                {/* Right Line: High-Tech Path with Glow & Gradient */}
+                                {/* Right Line */}
                                 <motion.path
                                     d="M 490,0 V 130 L 390,240 V 255"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
-                                    strokeWidth="2"
+                                    strokeWidth="2.5"
                                     strokeLinecap="square"
                                     strokeLinejoin="miter"
                                     style={{ filter: 'url(#laser-glow)' }}
@@ -163,12 +163,12 @@ const Login = ({ onLogin }) => {
                                     transition={{ duration: 1.5, delay: 0.7, ease: "circOut" }}
                                 />
 
-                                {/* Center Line: High-Tech Path with Glow & Gradient */}
+                                {/* Middle Line: ACCESS CONTROL */}
                                 <motion.path
-                                    d="M 292,60 V 205"
+                                    d="M 290,55 V 195"
                                     fill="none"
                                     stroke="url(#beam-gradient)"
-                                    strokeWidth="2"
+                                    strokeWidth="2.5"
                                     strokeLinecap="square"
                                     style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
