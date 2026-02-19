@@ -73,13 +73,34 @@
 
     <!-- Download Card -->
     <div
-      class="w-full max-w-[340px] md:max-w-[480px] rounded-xl md:rounded-2xl p-5 md:p-8 card-glow space-y-5 md:space-y-8 mt-2 md:mt-4 relative group">
+      class="w-full max-w-[340px] md:max-w-[480px] rounded-xl md:rounded-2xl p-5 md:p-8 card-glow space-y-4 md:space-y-6 mt-2 md:mt-4 relative group">
       <!-- Glow border effect on hover -->
       <div
         class="absolute -inset-px rounded-xl md:rounded-2xl bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none">
       </div>
 
-      <div class="flex items-center justify-between text-left">
+      <!-- Platform Tabs -->
+      <div class="flex rounded-lg overflow-hidden border border-white/10 relative z-10">
+        <button id="tab-win" onclick="switchPlatform('win')"
+          class="flex-1 py-2 md:py-2.5 text-[9px] md:text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 flex items-center justify-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="md:w-4 md:h-4">
+            <path
+              d="M3 5.5L10.5 4.4V11.4H3V5.5ZM3 18.5L10.5 19.6V12.6H3V18.5ZM11.5 19.8L21 21V12.6H11.5V19.8ZM11.5 4.2V11.4H21V3L11.5 4.2Z" />
+          </svg>
+          Windows
+        </button>
+        <button id="tab-mac" onclick="switchPlatform('mac')"
+          class="flex-1 py-2 md:py-2.5 text-[9px] md:text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 flex items-center justify-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="md:w-4 md:h-4">
+            <path
+              d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.81 11.78 5.72 12.57 5.72C13.36 5.72 14.85 4.62 16.4 4.8C17.07 4.83 18.87 5.08 20.04 6.79C19.94 6.86 17.62 8.23 17.64 11.08C17.67 14.46 20.53 15.56 20.57 15.57C20.53 15.68 20.07 17.33 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+          </svg>
+          macOS
+        </button>
+      </div>
+
+      <!-- Windows Info -->
+      <div id="info-win" class="flex items-center justify-between text-left relative z-10">
         <div class="flex items-center gap-3 md:gap-4">
           <div
             class="w-8 h-8 md:w-10 md:h-10 border border-white/10 rounded flex items-center justify-center bg-white/5">
@@ -103,9 +124,49 @@
           114 MB</div>
       </div>
 
-      <a href="https://github.com/ayobamizenthos/TeletraanOS/releases/download/v1.0/Teletraan-OS-Setup-1.0.exe"
-        class="block w-full py-3 md:py-4 bg-white text-black font-[800] text-[10px] md:text-xs tracking-[0.15em] uppercase rounded hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-3 btn-hover">
-        Download Now
+      <!-- macOS Info -->
+      <div id="info-mac" class="flex items-center justify-between text-left relative z-10" style="display:none;">
+        <div class="flex items-center gap-3 md:gap-4">
+          <div
+            class="w-8 h-8 md:w-10 md:h-10 border border-white/10 rounded flex items-center justify-center bg-white/5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white md:w-5 md:h-5"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[8px] md:text-[10px] text-white/40 font-bold uppercase tracking-widest mb-0.5">
+              macOS
+              Installer (.dmg)</div>
+            <div class="text-white font-bold text-sm md:text-lg tracking-tight">Teletraan Setup v1.0
+            </div>
+          </div>
+        </div>
+        <div
+          class="text-[8px] md:text-[10px] font-mono text-white/30 border border-white/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded">
+          147 MB</div>
+      </div>
+
+      <!-- Windows Download Button -->
+      <a id="btn-win"
+        href="https://github.com/ayobamizenthos/TeletraanOS/releases/download/v1.0/Teletraan-OS-Setup-1.0.exe"
+        class="block w-full py-3 md:py-4 bg-white text-black font-[800] text-[10px] md:text-xs tracking-[0.15em] uppercase rounded hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-3 btn-hover relative z-10">
+        Download for Windows
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          class="md:w-4 md:h-4">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+
+      <!-- macOS Download Button -->
+      <a id="btn-mac"
+        href="https://github.com/ayobamizenthos/TeletraanOS/releases/download/v1.0/Teletraan-OS-Setup-1.0.0.dmg"
+        style="display:none;"
+        class="block w-full py-3 md:py-4 bg-white text-black font-[800] text-[10px] md:text-xs tracking-[0.15em] uppercase rounded hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-3 btn-hover relative z-10">
+        Download for macOS
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           class="md:w-4 md:h-4">
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -114,12 +175,29 @@
       </a>
 
       <div
-        class="flex justify-end items-center text-[10px] md:text-[11px] text-white font-mono uppercase tracking-widest pt-2 border-t border-white/5 mt-3 md:mt-4">
+        class="flex justify-end items-center text-[10px] md:text-[11px] text-white font-mono uppercase tracking-widest pt-2 border-t border-white/5 mt-3 md:mt-4 relative z-10">
         <span class="flex items-center gap-2 font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]"><span
             class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10B981]"></span>
           Auto-Update Enabled</span>
       </div>
     </div>
+
+    <script>
+      function switchPlatform(platform) {
+        const isWin = platform === 'win';
+        document.getElementById('info-win').style.display = isWin ? 'flex' : 'none';
+        document.getElementById('info-mac').style.display = isWin ? 'none' : 'flex';
+        document.getElementById('btn-win').style.display = isWin ? 'flex' : 'none';
+        document.getElementById('btn-mac').style.display = isWin ? 'none' : 'flex';
+        document.getElementById('tab-win').className = document.getElementById('tab-win').className.replace(/bg-white\/10|bg-transparent|text-white|text-white\/40/g, '');
+        document.getElementById('tab-mac').className = document.getElementById('tab-mac').className.replace(/bg-white\/10|bg-transparent|text-white|text-white\/40/g, '');
+        document.getElementById('tab-win').classList.add(isWin ? 'bg-white/10' : 'bg-transparent', isWin ? 'text-white' : 'text-white/40');
+        document.getElementById('tab-mac').classList.add(isWin ? 'bg-transparent' : 'bg-white/10', isWin ? 'text-white/40' : 'text-white');
+      }
+      // Auto-detect OS
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0 || navigator.userAgent.indexOf('Mac') >= 0;
+      switchPlatform(isMac ? 'mac' : 'win');
+    </script>
 
 
 
