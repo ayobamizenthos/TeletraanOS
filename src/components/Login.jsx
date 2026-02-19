@@ -38,7 +38,24 @@ const Login = ({ onLogin }) => {
             <div className="w-full max-w-[1400px] h-[800px] flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10 px-10 lg:px-20">
 
                 {/* LEFT SIDE: VISUALIZATION (Maintained) */}
-                <div className="hidden lg:flex flex-col items-center justify-start pt-[160px] ml-[-70px] w-[650px] h-[750px] relative origin-center rounded-[30px] border border-white/10 bg-white/[0.02] shadow-[0_0_30px_rgba(255,255,255,0.03),inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-sm overflow-hidden group">
+                {/* LEFT SIDE: VISUALIZATION (Cinematic Shake + Scale) */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{
+                        opacity: 1,
+                        scale: 1,
+                        x: [0, -2, 4, -4, 2, 0], // Discrete impact shake
+                        y: [0, 2, -2, 2, -1, 0]
+                    }}
+                    transition={{
+                        opacity: { duration: 1 },
+                        scale: { duration: 1 },
+                        // Shake triggers at 1.7s (Logo arrival)
+                        x: { delay: 1.6, duration: 0.3, repeat: 0, ease: "linear" },
+                        y: { delay: 1.6, duration: 0.3, repeat: 0, ease: "linear" }
+                    }}
+                    className="hidden lg:flex flex-col items-center justify-start pt-[160px] ml-[-70px] w-[650px] h-[750px] relative origin-center rounded-[30px] border border-white/10 bg-white/[0.02] shadow-[0_0_30px_rgba(255,255,255,0.03),inset_0_0_20px_rgba(255,255,255,0.02)] backdrop-blur-sm overflow-hidden group"
+                >
 
                     {/* Titanium Glow Effect */}
                     <div className="absolute inset-0 rounded-[30px] border border-white/20 opacity-50 pointer-events-none" />
@@ -56,7 +73,7 @@ const Login = ({ onLogin }) => {
                             <motion.div
                                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
                                 animate={{ rotate: 360 }}
-                                transition={{ duration: 20, repeat: Infinity, ease: "linear", delay: 1.8 }}
+                                transition={{ duration: 20, repeat: Infinity, ease: "linear", delay: 1.7 }}
                             >
                                 {/* Inner Letter Track (The Rolling Grey Shape) */}
                                 <div className="absolute inset-[46px] rounded-full bg-[#050505] shadow-[inset_0_12px_24px_rgba(0,0,0,1),0_1px_0_rgba(255,255,255,0.05)] overflow-hidden flex items-center justify-center">
@@ -107,14 +124,26 @@ const Login = ({ onLogin }) => {
 
                             {/* Center Button with TELETRAAN LOGO (Static Container, Animated Logo) */}
                             <div className="absolute z-20 w-[100px] h-[100px] bg-[#161616] rounded-[24px] shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/[0.05] flex items-center justify-center overflow-visible">
+                                {/* Cinematic Shockwave Pulse on Slam */}
+                                <motion.div
+                                    className="absolute inset-[-20px] rounded-full border border-white/40 z-[-1]"
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 2.5, opacity: 0 }}
+                                    transition={{ delay: 1.7, duration: 0.8, ease: "easeOut" }}
+                                />
+
                                 <motion.img
                                     layoutId="teletraan-hero-logo"
                                     src={teletraanLogo}
-                                    className="w-[64px] h-[64px] opacity-90 object-contain"
+                                    className="w-[64px] h-[64px] opacity-90 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
                                     alt="Teletraan"
-                                    initial={{ x: 400, y: 400, opacity: 0, scale: 0.5 }}
-                                    animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-                                    transition={{ duration: 1.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                                    initial={{ x: 600, y: 600, opacity: 0, scale: 0.5, rotate: 25 }}
+                                    animate={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
+                                    transition={{
+                                        duration: 1.5,
+                                        delay: 0.2,
+                                        ease: [0.34, 1.56, 0.64, 1] // Custom BackOut for the SLAM effect
+                                    }}
                                 />
                             </div>
 
@@ -148,7 +177,7 @@ const Login = ({ onLogin }) => {
                                     style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
-                                    transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
+                                    transition={{ duration: 1, delay: 1.7, ease: "circOut" }}
                                 />
 
                                 {/* Right Line */}
@@ -162,7 +191,7 @@ const Login = ({ onLogin }) => {
                                     style={{ filter: 'url(#laser-glow)' }}
                                     initial={{ pathLength: 0, opacity: 0 }}
                                     animate={{ pathLength: 1, opacity: 1 }}
-                                    transition={{ duration: 1.5, delay: 0.7, ease: "circOut" }}
+                                    transition={{ duration: 1, delay: 1.9, ease: "circOut" }}
                                 />
 
                                 {/* Middle Line: ACCESS CONTROL */}
@@ -172,7 +201,7 @@ const Login = ({ onLogin }) => {
                                     width="2"
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 125, opacity: 1 }}
-                                    transition={{ duration: 1.5, delay: 0.9, ease: "circOut" }}
+                                    transition={{ duration: 1, delay: 2.1, ease: "circOut" }}
                                     fill="url(#beam-gradient)"
                                     style={{ filter: 'url(#laser-glow)' }}
                                 />
@@ -237,7 +266,7 @@ const Login = ({ onLogin }) => {
                         <span className="text-[10px] font-mono text-white/30 tracking-widest uppercase group-hover:text-white/70 transition-colors">Reset Viz</span>
                     </motion.button>
 
-                </div>
+                </motion.div>
 
                 {/* RIGHT SIDE: LOGIN FORM (RESTORED) */}
                 <div className="flex-1 flex flex-col items-end justify-center pr-0 mr-[-60px]">
@@ -342,7 +371,7 @@ const Login = ({ onLogin }) => {
                 </div>
 
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 
