@@ -221,7 +221,7 @@ const Login = ({ onLogin }) => {
                     </div>
                     {/* Footer Text - Impressively Positioned */}
                     <div className="absolute bottom-24 left-0 right-0 text-center pointer-events-none">
-                        <span className="text-[14px] font-sans font-black text-white tracking-[0.5em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">The Future of AI-Powered Security</span>
+                        <span className="text-[32px] font-sans font-black text-white tracking-[0.2em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">The Future of AI-Powered Security</span>
                     </div>
 
                 </div>
