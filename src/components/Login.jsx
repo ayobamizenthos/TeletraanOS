@@ -126,7 +126,7 @@ const Login = ({ onLogin }) => {
                             {/* LABELS */}
                             {/* Left Label - Aligned with x=-200px line start */}
                             <div className="absolute top-[-250px] left-[calc(50%-200px)] transform -translate-x-1/2">
-                                <div className="relative min-w-[220px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+                                <div className="relative min-w-[220px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
@@ -139,7 +139,7 @@ const Login = ({ onLogin }) => {
 
                             {/* Center Label - Aligned with x=0px line start */}
                             <div className="absolute top-[-160px] left-1/2 transform -translate-x-1/2">
-                                <div className="relative min-w-[180px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+                                <div className="relative min-w-[180px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
@@ -152,7 +152,7 @@ const Login = ({ onLogin }) => {
 
                             {/* Right Label - Aligned with x=+200px line start */}
                             <div className="absolute top-[-250px] left-[calc(50%+200px)] transform -translate-x-1/2">
-                                <div className="relative min-w-[240px] py-3 bg-[#080808] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
+                                <div className="relative min-w-[240px] py-3 bg-[#111111] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group">
                                     <div className="absolute inset-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
                                     <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20" />
                                     <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20" />
