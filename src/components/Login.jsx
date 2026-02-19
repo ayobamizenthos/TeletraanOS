@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Shield, Lock, Mail, User, RotateCw } from 'lucide-react';
+import { Eye, EyeOff, Shield, Lock, Mail, User } from 'lucide-react';
 import WindowControls from './WindowControls';
 import teletraanLogo from '../assets/teletraan.svg';
 
@@ -254,17 +254,7 @@ const Login = ({ onLogin }) => {
                         <span className="text-[14px] font-sans font-black text-white tracking-[0.5em] uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">The Future of AI-Powered Security</span>
                     </div>
 
-                    {/* Reload Button for Testing Animation */}
-                    <motion.button
-                        onClick={() => window.location.reload()}
-                        className="absolute bottom-8 left-8 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors z-[100] group"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 2 }}
-                    >
-                        <RotateCw className="w-4 h-4 text-white/50 group-hover:text-white group-hover:rotate-180 transition-all duration-500" />
-                        <span className="text-[10px] font-mono text-white/30 tracking-widest uppercase group-hover:text-white/70 transition-colors">Reset Viz</span>
-                    </motion.button>
+
 
                 </motion.div>
 
