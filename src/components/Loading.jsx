@@ -186,7 +186,7 @@ const Loading = ({ onComplete }) => {
                             <motion.span
                                 key={progress < 33 ? 'm1' : progress < 66 ? 'm2' : 'm3'}
                                 initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
-                                animate={{ opacity: 0.6, y: 0, filter: 'blur(0px)' }}
+                                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                                 exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
                                 transition={{ duration: 0.8, ease: "easeOut" }}
                                 className="text-[12px] font-mono text-white tracking-[0.4em] uppercase whitespace-nowrap"
